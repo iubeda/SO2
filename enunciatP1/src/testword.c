@@ -9,7 +9,7 @@ int main(void)
 {
     int i, len;
     char cadena[MAXCHAR];
-    char tokens[] = " ,;_-";
+    char tokens[] = " ,;_-12345678912345678900";
     char *palabra, *copier;
 
     printf("Introdueix la cadena a processar: ");
