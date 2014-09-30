@@ -79,9 +79,9 @@ int aarxiu(char *nomarxiu){
                 if(buffer[currentbff-1] == APOSTROFE) currentbff--;
             }
             // volvemos a comprobar que hay algo en el buffer
-            if(currentbff && numexception== 0)
+            if(currentbff && !numexception)
                 saveword = 1;
-		if(numexception == 1){ 
+		if(numexception){ 
 			numexception = 0;
 			currentbff = 0;
  		}
@@ -97,7 +97,7 @@ int aarxiu(char *nomarxiu){
                 saveword = 1;
             }
         }
-        if(saveword && numexception== 0){
+        if(saveword && !numexception){
             saveword = 0;
 
             words[nwords] = allocword(buffer, currentbff);
