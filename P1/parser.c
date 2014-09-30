@@ -45,7 +45,7 @@ char *allocword(char word[], int len){
  * Funcio que analitza un arxiu especificat per parametre
  */
 int aarxiu(char *nomarxiu){
-    int currentbff, nwords,caracter;
+    int currentbff, nwords,caracter, numexception;
     int saveword;
     FILE *fl;
     char buffer[MAXBUFFER];
@@ -60,6 +60,7 @@ int aarxiu(char *nomarxiu){
 
     // inicialitzem el contador del buffer
     currentbff = 0;
+	numexception = 0;
     nwords = 0;
     saveword = 0;
     caracter = fgetc(fl);
@@ -78,9 +79,14 @@ int aarxiu(char *nomarxiu){
                 if(buffer[currentbff-1] == APOSTROFE) currentbff--;
             }
             // volvemos a comprobar que hay algo en el buffer
-            if(currentbff)
+            if(currentbff && numexception== 0)
                 saveword = 1;
-        }else if(isdigit(caracter)){
+		if(numexception == 1){ 
+			numexception = 0;
+			currentbff = 0;
+ 		}
+        }else if(isdigit(caracter)){ // comprobamos si es numero
+		numexception = 1;
             currentbff = 0;
         }else if(ispunct(caracter)){
             if (caracter == APOSTROFE){
@@ -91,7 +97,7 @@ int aarxiu(char *nomarxiu){
                 saveword = 1;
             }
         }
-        if(saveword){
+        if(saveword && numexception== 0){
             saveword = 0;
 
             words[nwords] = allocword(buffer, currentbff);
