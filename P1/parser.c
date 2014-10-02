@@ -60,7 +60,7 @@ int aarxiu(char *nomarxiu){
 
     // inicialitzem el contador del buffer
     currentbff = 0;
-	numexception = 0;
+    numexception = 0;
     nwords = 0;
     saveword = 0;
     caracter = fgetc(fl);
@@ -81,12 +81,12 @@ int aarxiu(char *nomarxiu){
             // volvemos a comprobar que hay algo en el buffer
             if(currentbff && !numexception)
                 saveword = 1;
-		if(numexception){ 
-			numexception = 0;
-			currentbff = 0;
- 		}
+            if(numexception){ 
+                numexception = 0;
+                currentbff = 0;
+
         }else if(isdigit(caracter)){ // comprobamos si es numero
-		numexception = 1;
+            numexception = 1;
             currentbff = 0;
         }else if(ispunct(caracter)){
             if (caracter == APOSTROFE){
