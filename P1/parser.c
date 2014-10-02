@@ -64,7 +64,7 @@ int aarxiu(char *nomarxiu){
     nwords = 0;
     saveword = 0;
     caracter = fgetc(fl);
-    while( !feof(fl) ){
+    while( !feof(fl) && nwords < MAXWORDS){
         if(isalpha(caracter)){ // comprobamos si es una letra
             // comprobamos que este en lowercase
             if(isupper(caracter)){
@@ -102,6 +102,8 @@ int aarxiu(char *nomarxiu){
             saveword = 0;
 
             words[nwords] = allocword(buffer, currentbff);
+            //printf("%s\n", words[nwords]);
+            //nwords--;
             currentbff = 0;
             nwords++;
         }
@@ -112,9 +114,13 @@ int aarxiu(char *nomarxiu){
 
 
 
-    printf("Paraules enregistrades: %i\n", nwords);
     show_words(words, nwords);
     free_words(words, nwords);
 
+    if(nwords == MAXWORDS)
+    {
+        printf("S'han enregistrat el maxim de paraules permeses\n");
+    }
+    printf("Paraules enregistrades: %i\n", nwords);
     return 0;
 }
