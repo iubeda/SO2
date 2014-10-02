@@ -84,7 +84,7 @@ int aarxiu(char *nomarxiu){
             if(numexception){ 
                 numexception = 0;
                 currentbff = 0;
-
+            
         }else if(isdigit(caracter)){ // comprobamos si es numero
             numexception = 1;
             currentbff = 0;
