@@ -79,12 +79,13 @@ int aarxiu(char *nomarxiu){
                 if(buffer[currentbff-1] == APOSTROFE) currentbff--;
             }
             // volvemos a comprobar que hay algo en el buffer
-            if(currentbff && !numexception)
+            if(currentbff && !numexception){
                 saveword = 1;
+            }
             if(numexception){ 
                 numexception = 0;
                 currentbff = 0;
-
+            }
         }else if(isdigit(caracter)){ // comprobamos si es numero
             numexception = 1;
             currentbff = 0;
