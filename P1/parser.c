@@ -65,13 +65,17 @@ int aarxiu(char *nomarxiu){
     saveword = 0;
     caracter = fgetc(fl);
     while( !feof(fl) && nwords < MAXWORDS){
-        if(isalpha(caracter)){ // comprobamos si es una letra
+        if(isalpha(caracter) && !numexception)
+        { // comprobamos si es una letra y no hay numexceptin
             // comprobamos que este en lowercase
             if(isupper(caracter)){
                 caracter = tolower(caracter);
             }
             buffer[currentbff++] = caracter;
-        }else if(isspace(caracter)){ // comprobamos si es un espacio o salto de linea
+        }else if(isspace(caracter))
+        {   // desactivamos numexception si lo hubiese
+            if(numexception)numexception = 0;
+            // comprobamos si es un espacio o salto de linea
             // comprobamos que hay algo en el buffer
             if(currentbff){
                 // comprobamos que el ultimo caracter no sea un '
@@ -79,14 +83,11 @@ int aarxiu(char *nomarxiu){
                 if(buffer[currentbff-1] == APOSTROFE) currentbff--;
             }
             // volvemos a comprobar que hay algo en el buffer
-            if(currentbff && !numexception){
+            if(currentbff){
                 saveword = 1;
             }
-            if(numexception){ 
-                numexception = 0;
-                currentbff = 0;
-            }
         }else if(isdigit(caracter)){ // comprobamos si es numero
+            // evitamos palabra con numero al inicio, o en medio
             numexception = 1;
             currentbff = 0;
         }else if(ispunct(caracter)){
@@ -94,11 +95,11 @@ int aarxiu(char *nomarxiu){
                 if(currentbff){ // si hay caracteres en el buffer, guardamos este tmb
                     buffer[currentbff++] = caracter;
                 }
-            }else{
+            }else if(currentbff){
                 saveword = 1;
             }
         }
-        if(saveword && !numexception){
+        if(saveword){
             saveword = 0;
 
             words[nwords] = allocword(buffer, currentbff);
