@@ -10,7 +10,6 @@
 #define MAXWORDS 1000
 #define APOSTROFE '\''
 #define ZERO '\0'
-#define GUION '-'
 
 
 
@@ -94,7 +93,7 @@ int aarxiu(char *nomarxiu)
     // llegim el primer caracter
     caracter = fgetc(fl);
 
-    while( (!feof(fl) && nwords < MAXWORDS) )
+    while( !feof(fl) && nwords < MAXWORDS)
     {
         if(isalpha(caracter)) // comprobem si es una lletra
         {
@@ -106,25 +105,19 @@ int aarxiu(char *nomarxiu)
                 }
                 // emmagatzemem la lletra
                 buffer[currentbff++] = caracter;
-            }else if(currentbff){
-                // si es wordexception i tenim un caracter i buffer
-                // posem el buffer a zero, eliminant 
-                // signes de puntuacio en mig d'una paraula (que no siguin ' o  - )
-
-                currentbff = 0;
             }
         }
         else if(isspace(caracter))
-        {   // desactivem excepcio de paraula
+        {   // desactivem excepcio de numero
              wordexception = 0;
             // comprovem que hi han caracters al buffer
             if(currentbff)
             {
-                // si l'ultim caracter del buffer es un signe de 
-                // puntuacio, l'eliminem
-                if(ispunct(buffer[currentbff - 1]))
+                // comprobem que l'ultim caracter no es apostrof
+                // si ho es, l'eliminem
+                if(buffer[currentbff-1] == APOSTROFE) 
                     currentbff--;
-                // ara tornem a comprobar si n'hi han caracters al buffer
+                // ara tornem a comprobar si n'hi han caracters
                 if(currentbff)
                     saveword = 1;
             }
@@ -132,7 +125,6 @@ int aarxiu(char *nomarxiu)
         else if(isdigit(caracter))
         {
             // evitem paraula amb numeros al inici, final o enmig
-            // el·liminant buffer i activant l'excepcio
             wordexception = 1;
             currentbff = 0;
         }
@@ -142,13 +134,9 @@ int aarxiu(char *nomarxiu)
             {
                 buffer[currentbff++] = caracter;
             }
-            else if(caracter == GUION && currentbff) // Si es guio, guardem la paraula
+            else if(currentbff) // Si no es apostrof no guardem el caracter pero si la paraula
             {
                 saveword = 1;
-            }
-            else if(currentbff) // Si no es apostrof ni guio pero hi ha buffer, activem excepcio
-            {
-                wordexception = 1;
             }
         }else
         {
@@ -167,23 +155,9 @@ int aarxiu(char *nomarxiu)
         caracter = fgetc(fl);
 
     }
-    // en sortir, analitzem que no hagi quedat cap paraula al buffer
-    if(currentbff)
-    {
-        // si l'ultim caracter del buffer es un signe de 
-        // puntuacio, l'eliminem
-        if(ispunct(buffer[currentbff - 1]))
-            currentbff--;
-        // ara tornem a comprobar si hi ha buffer que guardar
-        if(currentbff)
-        {
-            words[nwords] = allocword(buffer, currentbff);
-            currentbff = 0;
-            nwords++;
-        }
-    }
-    // tanquem arxiu
     fclose(fl);
+
+
 
     show_words(words, nwords);
     free_words(words, nwords);
