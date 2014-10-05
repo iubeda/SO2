@@ -1,6 +1,9 @@
 Paraula valida: hola
 Paraula valida: hola
 Paraula valida: hola
+Paraula valida: bon
+Paraula valida: dia
+Paraula valida: prova
 Paraula valida: prova
 Paraula valida: grau
 Paraula valida: enginyeria
@@ -9,6 +12,13 @@ Paraula valida: good
 Paraula valida: good
 Paraula valida: good
 Paraula valida: good's
+Paraula valida: good
+Paraula valida: ub
+Paraula valida: edu
 Paraula valida: link
+Paraula valida: http
+Paraula valida: www
+Paraula valida: ub
+Paraula valida: edu
 Paraula valida: fine
-Paraules enregistrades: 13
+Paraules enregistrades: 23

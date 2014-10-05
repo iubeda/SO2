@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main(void)
 {
@@ -14,9 +15,12 @@ int main(void)
 
   fgets(str, 100, fp);
   while (!feof(fp)) {
-     printf("Linia: %s\n", str);
+     str[strlen(str) - 1] = '\0';
+     printf("Linia len(%lu) : %s\n",strlen(str), str);
      fgets(str, 100, fp);
   }
+     printf("Linia: %s\n", str);
+
 
   fclose(fp);
 }

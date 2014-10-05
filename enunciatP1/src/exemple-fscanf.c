@@ -3,7 +3,7 @@
 
 int main(void)
 {
-  char str[20];
+  char str[3];
   FILE *fp;
 
   fp = fopen("fitxer.txt", "r");

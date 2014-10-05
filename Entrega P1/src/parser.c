@@ -97,7 +97,7 @@ int aarxiu(char *nomarxiu)
     {
         if(isalpha(caracter)) // comprobem si es una lletra
         {
-            if(!wordexception) // comprobem no tenim excepcio de numero
+            if(!wordexception) // comprobem no tenim excepcio de paraula
             {
                 if(isupper(caracter))
                 {
