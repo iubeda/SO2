@@ -22,8 +22,11 @@
 *.x86_64
 *.hex
 
+# zip
+P2/BaseDades.zip
+
 # Folders
-P2/database/
+P2/base_dades/
 
 
 
