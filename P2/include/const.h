@@ -9,6 +9,7 @@
 #define MAX_WORD_LENGTH 100  // tamany maxim de paraula
 #define APOSTROFE '\''
 #define ZERO '\0'
+#define MAX_ARRAY_LINKED_LISTS 100  // tamany per al array de llistes
 
 typedef struct STRING_ARRAY{
     int length; // longitud del vector
