@@ -1,3 +1,5 @@
+#ifndef _LINKED_LIST_H
+#define _LINKED_LIST_H
 /**
  *
  * Linked-list header 
@@ -19,7 +21,7 @@
  *
  */
 
-#define TYPE_LIST_PRIMARY_KEY int
+#define TYPE_LIST_PRIMARY_KEY char /*P2: la clau ara es la propia paraula */
 
 /**
  *
@@ -31,8 +33,8 @@
  */
 
 typedef struct ListData_ {
-  // The variable used to index the list has to be called "primary_key".
-  TYPE_LIST_PRIMARY_KEY primary_key;
+  /*P2 The variable used to index the list has to be called "primary_key" */
+  TYPE_LIST_PRIMARY_KEY *primary_key;
 
   // This is the additional information that will be stored
   // within the structure. This additional information is associated
@@ -72,8 +74,9 @@ typedef struct List_ {
 
 void initList(List *l);
 void insertList(List *l, ListData *data);
-ListData *findList(List *l, TYPE_LIST_PRIMARY_KEY primary_key);
+/*P2: modificado segundo parametro*/
+ListData *findList(List *l, TYPE_LIST_PRIMARY_KEY *primary_key);
 void deleteFirstList(List *l);
 void deleteList(List *l);
 void dumpList(List *l);
-
+#endif

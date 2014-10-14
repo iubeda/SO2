@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 /**
  * We include the linked-list.h header. Note the double
  * quotes.
@@ -28,7 +28,8 @@
 
 static void freeListData(ListData *data)
 {
-  free(data); 
+    free(data->primary_key); /*P2: es un punter a paraula */
+    free(data); 
 }
 
 /**
@@ -37,9 +38,10 @@ static void freeListData(ListData *data)
  *
  */
 
+/*P2:  Modificamos el tipo de key */
 static void dumpListData(ListData *data)
 {
-  printf("Key %03d appears %d times\n", data->primary_key, data->numTimes);
+  printf("Key %s appears %d times\n", data->primary_key, data->numTimes);
 }
 
 /**
@@ -49,10 +51,14 @@ static void dumpListData(ListData *data)
  *
  */
 
-static int compEQ(TYPE_LIST_PRIMARY_KEY primary_key1, TYPE_LIST_PRIMARY_KEY primary_key2)
+/*P2: Modificamos los parametros de entrada, ahora son punteros*/
+static int compEQ(TYPE_LIST_PRIMARY_KEY *primary_key1, TYPE_LIST_PRIMARY_KEY *primary_key2)
 {
-  int rc = (primary_key1 == primary_key2);
-  return rc;
+    /*int rc = (primary_key1 == primary_key2);*/
+    /* fem us de strcmp  si son iguals retornara 0, i o convertim a 1
+     * si no es igual retorna altres numeros, y o convertim a 0 */
+    int rc = strcmp(primary_key1, primary_key2) == 0 ? 1 : 0;
+    return rc;
 }
 
 /**
@@ -112,8 +118,8 @@ void insertList(List *l, ListData *data)
  * that it points to (not the item itself).
  *
  */
-
-ListData *findList(List *l, TYPE_LIST_PRIMARY_KEY primary_key)
+/*P2: modificado segundo parametro de entrada */
+ListData *findList(List *l, TYPE_LIST_PRIMARY_KEY *primary_key)
 {
   ListItem *current;
 

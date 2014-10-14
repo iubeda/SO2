@@ -4,7 +4,7 @@
 CFLAGS = -g
 LFLAGS = -lm
 
-FILES_C = main.c file-parser.c file-list.c linked-list.h
+FILES_C = main.c file-parser.c file-list.c linked-list.c
 
 TARGET = practica2
 
