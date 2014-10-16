@@ -6,13 +6,6 @@
 #include "linked-list.h"
 
 /**
- *
- * Main function
- *
- */
- 
-
-/**
  * indexa un arxiu en estructura global
  */
 int indexar_llistat(List hash_list[])
@@ -21,21 +14,37 @@ int indexar_llistat(List hash_list[])
 }
 
 /**
- * procesa una arxiu
+ * procesa un llistat d arxius
  */
-int processar_arxiu(char *nom_arxiu)
+int processar_llista_arxius(STR_ARRAY paraules)
 {
+    int i,j;
+    List **arxiuProcessat;
+    
     //TODO
+    
+    for(i=0; i < paraules.length; i++){
+        //processar_arxiu(paraules.data[i]);
+        // call fparser bro
+        if( (arxiuProcessat = fparser(paraules.data[i])) ){
+            // todo va bien vamos a indexar
+            for(j=0; j<MAX_ARRAY_LINKED_LISTS; j++){
+                printf("tengo %i \n",arxiuProcessat[j]->numItems);
+            }
+            
+        }else{
+            // fail, no indexo
+        }
+            
+    }
+
 }
 
 /**
- * procesa un llistat de paraules
+ *
+ * Main function
+ *
  */
-int processar_arxius(STR_ARRAY paraules)
-{
-    //TODO
-
-}
 int main(int argc, char **argv)
 {
     STR_ARRAY paraules;
@@ -48,12 +57,15 @@ int main(int argc, char **argv)
 
     /* cridem a la funcio del llistat de paraules que retorna un struct */
     paraules = flist(argv[1]);
+    processar_llista_arxius(paraules);
+    /*
     int iter;
     for(iter = 0; iter < paraules.length; iter++)
     {
         printf("%s\n", paraules.data[iter]);
         free(paraules.data[iter]);
     }
+    */
     free(paraules.data);
     return 0;
 }

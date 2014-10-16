@@ -3,6 +3,6 @@
 #include "include/const.h"
 #include "linked-list.h"
 /* nomes fem visible aquesta funcio */
-int fparser(char *nomarxiu);
+List **fparser(char *nomarxiu);
 
 #endif
