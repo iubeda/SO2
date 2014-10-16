@@ -5,7 +5,7 @@
 #include "include/const.h"
 
 
-STR_ARRAY flist(char *fname)
+Str_array *flist(char *fname)
 {
     char str[MAX_PATH_LENGTH];
 
@@ -15,7 +15,8 @@ STR_ARRAY flist(char *fname)
     FILE *fp;
     int num_files, counter, len;
     char **files;
-    STR_ARRAY paraules;
+    Str_array *paraules;
+    paraules = (Str_array *) malloc(sizeof(Str_array));
 
     fp = fopen(fname, "r");
     if (!fp) {
@@ -39,8 +40,8 @@ STR_ARRAY flist(char *fname)
     //printf("Total files : %i\n", num_files);
     //printf("Primera paraula: %s\n", files[0]);
 
-    paraules.length = num_files;
-    paraules.data = files;
+    paraules->length = num_files;
+    paraules->data = files;
 
     //for(counter = 0; counter < num_files; counter++)
     //    free(files[counter]);
