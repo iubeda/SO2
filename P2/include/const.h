@@ -11,8 +11,4 @@
 #define ZERO '\0'
 #define MAX_ARRAY_LINKED_LISTS 100  // tamany per al array de llistes
 
-typedef struct STRING_ARRAY{
-    int length; // longitud del vector
-    char **data; // datos
-}STR_ARRAY;
 #endif

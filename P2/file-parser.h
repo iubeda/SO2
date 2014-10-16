@@ -1,8 +1,11 @@
 #ifndef _FILE_LIST_H
 #define _FILE_LIST_H
-#include "include/const.h"
-#include "linked-list.h"
+#include <stdio.h>
+#include "hash-list.h"
+
+
+
 /* nomes fem visible aquesta funcio */
-List **fparser(char *nomarxiu);
+Hash_list *fparser(FILE *fl);
 
 #endif

@@ -2,25 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "include/const.h"
 #include "file-parser.h"
+#include "hash-list.h"
 
 
-/*
- *  Devuelve el hash de una palabra
- */
-int hash( char *word ){
-  unsigned int i, len, seed, sum, hash;
-
-  len = strlen(word);
-  sum = 0;
-  seed = 131;
-  for(i = 0; i < len; i++)
-    sum = sum * seed + (int)word[i];
-
-  hash = sum % MAX_ARRAY_LINKED_LISTS;
-
-  return hash;
-}
 
 
 
@@ -72,61 +58,27 @@ char *allocword(char *word)
     // retornem el punter
     return newword;
 }
-/*
-void alloclist(List *lista){
-    
-    lista = malloc(sizeof(List));
-    initList(lista);
-    
-}
-*/
-/**
- * procesa una arxiu
- */
-FILE *processar_arxiu(char *nom_arxiu)
-{
-    //TODO
-    FILE *fl;
-    
-    // compruebo que existe el fichero
-    fl = fopen(nom_arxiu, "r");
-    if(!fl)
-    {
-        printf("No s'ha pogut obrir l'arxiu %s\n", nom_arxiu);
-        return NULL;
-    }
-    return fl;
-    
-}
 
 
 /**
- * Funcio que analitza un arxiu especificat per parametre
- * i emmagatzema les paraules valides en un array static.
- *
- * 
+ * Parsea un archivo y devuelve una hash list con todas las palabras
  */
-List **fparser(char *nomarxiu)
+Hash_list *fparser(FILE *fl)
 {
     int i, currentbff, nwords,caracter, wordexception, hashvalue;
     int saveword;
-    FILE *fl;
     char buffer[MAX_WORD_LENGTH];
-    List **listaLocal;      // contindra 100 llistes enllacades
-    List *listaEnllacada;
-    ListData *nodo;         // primary_key -> palabra; numItems-> numero de coincidencias
     
-    //Obrim el arxiu en mode lectura
-    if( !(fl = processar_arxiu(nomarxiu)) )
-    {
-        return NULL;
-    }
+    Hash_list *llista_local;   // contindra 100 llistes enllacades
+    List *llistaEnllacada;
+    ListData *data;         // primary_key -> palabra; numItems-> numero de coincidencias
+    
 
-    for(i=0; i<MAX_ARRAY_LINKED_LISTS; i++){
-        //alloclist(listaLocal[i]);
-         listaLocal[i] = malloc(sizeof(List));
-         initList(listaLocal[i]);
-    }
+    llista_local = malloc(sizeof(Hash_list));
+    llista_local->length = MAX_ARRAY_LINKED_LISTS;
+    
+    // iniciamos la hash list con tamano definido
+    init_hash_list(llista_local);
     
     // inicialitzem el contador del buffer
     currentbff = 0;
@@ -193,42 +145,42 @@ List **fparser(char *nomarxiu)
 
         if(saveword)
         {
-            // TODO
-            //
-            // indexamos palabra en lista local (hash)
+            // marcamos el final de la palabra en el buffer
             buffer[currentbff] = ZERO;
-            
-            hashvalue = hash(buffer);
-            
-            listaEnllacada = listaLocal[hashvalue];
-            
-            nodo = findList(listaEnllacada, buffer);
-            if(nodo){
-                // la palabra existe previamente
-                nodo->numTimes++;
-                
-            }else{
-                // la palabra no existe, la creamos de cero
-                nodo = malloc(sizeof(ListData));
-                nodo->primary_key = allocword(buffer);
-                nodo->numTimes = 1;
+            // indexamos palabra en lista local (hash)
+            hashvalue = hash_value(llista_local,buffer);
+            // recuperamos la lista asociada a ese hash 
+            llistaEnllacada = llista_local->data[hashvalue];
+            // recuperamos el data de la lista asociada
+            data = findList(llistaEnllacada, buffer);
 
-                insertList(listaEnllacada, nodo);
-                
-            }           
-            
+            if(data){
+                // la palabra existe previamente
+                data->numTimes++;
+            }else{
+                /* La palabra no existe, creamos el data
+                 * allocatamos la palabra, la apuntamos
+                 * con el primary key y ponemos el numTimes a 1
+                 */
+                data = malloc(sizeof(ListData));
+                data->primary_key = allocword(buffer);
+                data->numTimes = 1;
+
+                // insertamos el nuevo data
+                insertList(llistaEnllacada, data);
+
+            }
+
             saveword = 0;
-            //words[nwords] = allocword(buffer, currentbff);
             currentbff = 0;
             nwords++;
         }
         caracter = fgetc(fl);
 
     }
-    fclose(fl);
 
     //show_words(words, nwords);
     //free_words(words, nwords);
 
-    return listaLocal;
+    return llista_local;
 }
