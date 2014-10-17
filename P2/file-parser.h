@@ -1,5 +1,5 @@
-#ifndef _FILE_LIST_H
-#define _FILE_LIST_H
+#ifndef _FILE_PARSER_H
+#define _FILE_PARSER_H
 #include <stdio.h>
 #include "hash-list.h"
 
