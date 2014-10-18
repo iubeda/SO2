@@ -50,8 +50,11 @@ static void freeRBData(RBData *data)
 
 static int compLT(TYPE_RBTREE_PRIMARY_KEY primary_key1, TYPE_RBTREE_PRIMARY_KEY primary_key2)
 {
-  int rc = (primary_key1 < primary_key2);
-  return rc;
+    /*P2: al modificar el tipo de la PK debemos modificar esta funcion
+     http://stackoverflow.com/questions/18408558/logic-challenge-sorting-arrays-alphabetically-in-c
+     */
+    int rc = strcmp(primary_key1, primary_key2) < 0 ? 1 : 0;
+    return rc;
 }
 
 /**
@@ -63,8 +66,9 @@ static int compLT(TYPE_RBTREE_PRIMARY_KEY primary_key1, TYPE_RBTREE_PRIMARY_KEY 
 
 static int compEQ(TYPE_RBTREE_PRIMARY_KEY primary_key1, TYPE_RBTREE_PRIMARY_KEY primary_key2)
 {
-  int rc = (primary_key1 == primary_key2);
-  return rc;
+    /*P2: al modificar el tipo de la PK debemos modificar esta funcion */
+    int rc = strcmp(primary_key1, primary_key2) == 0 ? 1 : 0;
+    return rc;
 }
 
 /**
