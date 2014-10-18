@@ -76,8 +76,8 @@ static int compEQ(TYPE_LIST_PRIMARY_KEY *primary_key1, TYPE_LIST_PRIMARY_KEY *pr
 
 void initList(List *l)
 {
-  l->numItems = 0;
-  l->first = NULL;
+    l->numItems = 0;
+    l->first = NULL;
 }
 
 /**
@@ -91,25 +91,25 @@ void initList(List *l)
 
 void insertList(List *l, ListData *data)
 {
-  ListItem *tmp, *x;
+    ListItem *tmp, *x;
 
-  x = malloc(sizeof(ListItem));
+    x = malloc(sizeof(ListItem));
 
-  if (x == 0) {
-    printf("insufficient memory (insertItem)\n");
-    exit(1);
-  }
+    if (x == 0) {
+        printf("insufficient memory (insertItem)\n");
+        exit(1);
+    }
 
-  /* Insert item at first position */
+    /* Insert item at first position */
 
-  tmp = l->first;
-  l->first = x;
-  x->next = tmp;
+    tmp = l->first;
+    l->first = x;
+    x->next = tmp;
 
-  /* Link data to inserted item */
-  x->data = data;
+    /* Link data to inserted item */
+    x->data = data;
 
-  l->numItems++;
+    l->numItems++;
 }
 
 /**
@@ -198,7 +198,7 @@ void dumpList(List *l)
 
   while (current != NULL)
   {
-    dumpListData(current->data);
+    dumpListData(current->data);	// show primary key and numitems from this node
     current = current->next;
   }
 
