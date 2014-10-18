@@ -9,9 +9,27 @@
 /**
  * indexa un arxiu en estructura global
  */
-int indexar_llistat(List hash_list[])
+int indexar_llistat(List *hash_list)
 {
     //TODO
+    /*
+    ListItem *current;
+
+    current = hash_list->first;
+
+    while (current != NULL)
+    {
+        if (findNode(  ARBOL , current->data->primary_key)){
+        
+            
+        }else{
+        
+            
+        }
+
+        current = current->next;
+    }
+    */
 }
 
 /**
@@ -35,8 +53,13 @@ int processar_llista_arxius(Str_array *arxius)
         // todo va bien, no devuelve NULL,  vamos a indexar
         for( j = 0; j < arxiu_procesat->length; j++ )
         {
-            printf("tengo %i \n", arxiu_procesat->data[j]->numItems);
+            // Debug hash list
+                printf("\n ---> Hash list index %i \n\n", j);
+                dumpList(arxiu_procesat->data[j]);
+            //indexar_llistat( arxiu_procesat->data[j] );
+            //printf("tengo %i \n", arxiu_procesat->data[j]->numItems);
         }
+        
         fclose(fl);
         
         // alliberem memoria
