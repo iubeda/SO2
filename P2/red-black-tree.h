@@ -7,7 +7,8 @@
  *
  */
 
-#define TYPE_RBTREE_PRIMARY_KEY int
+
+#define TYPE_RBTREE_PRIMARY_KEY char /*P2: la clau ara es la propia paraula */
 
 /**
  *
@@ -21,14 +22,14 @@
 
 typedef struct RBData_
 {
-  // The variable used to index the tree has to be called "primary_key".
-  // The type may be any you want (float, char *, etc)
-  TYPE_RBTREE_PRIMARY_KEY primary_key;     
+    // The variable used to index the tree has to be called "primary_key".
+    // The type may be any you want (float, char *, etc)
+    TYPE_RBTREE_PRIMARY_KEY *primary_key;     
 
-  // This is the additional information that will be stored
-  // within the structure.
-  char *string;
-  int num;
+    // This is the additional information that will be stored
+    // within the structure.
+    char *string;   /*P2: informacion de cada archivo  */
+    int num;        /*P2: numero de archivos en los que sale */
 } RBData;
 
 /**
@@ -58,7 +59,7 @@ typedef struct Node_ {
  */
 
 typedef struct RBTree_ {
-  Node *root;                   /* root of Red-Black tree */
+    Node *root;                   /* root of Red-Black tree */
 } RBTree;
 
 /*
