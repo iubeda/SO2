@@ -37,6 +37,10 @@ static void freeRBData(RBData *data)
 {
   if (data->string)
     free(data->string);
+  
+  /*P2: liberamos la primary key que ahora es char  */
+  if(data->primary_key)
+      free(data->primary_key);
 
   free(data);
 }
@@ -48,7 +52,7 @@ static void freeRBData(RBData *data)
  *
  */
 
-static int compLT(TYPE_RBTREE_PRIMARY_KEY primary_key1, TYPE_RBTREE_PRIMARY_KEY primary_key2)
+static int compLT(TYPE_RBTREE_PRIMARY_KEY *primary_key1, TYPE_RBTREE_PRIMARY_KEY *primary_key2)
 {
     /*P2: al modificar el tipo de la PK debemos modificar esta funcion
      http://stackoverflow.com/questions/18408558/logic-challenge-sorting-arrays-alphabetically-in-c
@@ -64,7 +68,7 @@ static int compLT(TYPE_RBTREE_PRIMARY_KEY primary_key1, TYPE_RBTREE_PRIMARY_KEY 
  *
  */
 
-static int compEQ(TYPE_RBTREE_PRIMARY_KEY primary_key1, TYPE_RBTREE_PRIMARY_KEY primary_key2)
+static int compEQ(TYPE_RBTREE_PRIMARY_KEY *primary_key1, TYPE_RBTREE_PRIMARY_KEY *primary_key2)
 {
     /*P2: al modificar el tipo de la PK debemos modificar esta funcion */
     int rc = strcmp(primary_key1, primary_key2) == 0 ? 1 : 0;
@@ -280,7 +284,7 @@ void insertNode(RBTree *tree, RBData *data) {
  *
  */
 
-RBData *findNode(RBTree *tree, TYPE_RBTREE_PRIMARY_KEY primary_key) {
+RBData *findNode(RBTree *tree, TYPE_RBTREE_PRIMARY_KEY *primary_key) {
 
   Node *current = tree->root;
   while(current != NIL)
