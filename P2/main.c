@@ -11,7 +11,7 @@
 /**
  * indexa un arxiu en estructura global
  */
-void indexar_llistat(List *hash_list, RBTree *tree)
+void indexar_llistat(List *hash_list, RBTree *tree, int numarxius)
 {
     //TODO
     int pos, len;
@@ -38,7 +38,7 @@ void indexar_llistat(List *hash_list, RBTree *tree)
             treeData->primary_key = malloc( (sizeof(char) * len)+1 );
             // copiamos la pk a treeData
             strcpy(treeData->primary_key, current->data->primary_key);
-            treeData->string = malloc(sizeof(char) * 10);
+            treeData->string = malloc(sizeof(char) * numarxius);
             treeData->string[0] = current->data->numTimes;
             treeData->num = 1;
 
@@ -55,11 +55,13 @@ void indexar_llistat(List *hash_list, RBTree *tree)
  */
 int processar_llista_arxius(Str_array *arxius, RBTree *tree)
 {
-    int i,j;
+    int i,j, numarxius;
     Hash_list *arxiu_procesat;
 
+    numarxius = arxius->length;
+    
     // recorrem el llistat d'arxius
-    for( i = 0; i < arxius->length; i++ )
+    for( i = 0; i < numarxius; i++ )
     {
         FILE *fl;
         fl = fopen(arxius->data[i], "r");
@@ -74,7 +76,7 @@ int processar_llista_arxius(Str_array *arxius, RBTree *tree)
             // Debug hash list
                 //printf("\n ---> Hash list index %i \n\n", j);
                 //dumpList(arxiu_procesat->data[j]);
-            indexar_llistat( arxiu_procesat->data[j] , tree);
+            indexar_llistat( arxiu_procesat->data[j] , tree, numarxius);
             //printf("tengo %i \n", arxiu_procesat->data[j]->numItems);
         }
         
@@ -124,7 +126,7 @@ int main(int argc, char **argv)
     free(paraules);
     
     /*P2: testeo cutre del arbol*/
-    data = tree.root->data;  
+    data = tree.root->right->data;  
     printf("palabra: %s | puntero %p | numfiles: %i | info: %i\n", data->primary_key, data->primary_key, 
            data->num, data->string[0]);
   
