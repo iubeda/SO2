@@ -53,7 +53,7 @@ char *allocword(char *word)
     len = strlen(word);
     // allocatem len + 1 ja que len no inclueix el \0
     newword = malloc( (sizeof(char) * len) + 1 );
-    // volquem la paraula amb strncpy, que ens permet definir la longitud a copiar
+    // volquem la paraula amb strcpy
     strcpy(newword, word);
     // retornem el punter
     return newword;
