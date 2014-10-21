@@ -8,46 +8,114 @@
 #include "hash-list.h"
 #include "red-black-tree.h"
 
+#define DEBUG 1
+#define DUMP_LIST 0
+#define DUMP_TREE 1
+
+
+
+
 /**
- * indexa un arxiu en estructura global
+ * indexa una llista enllasada al tree
  */
-void indexar_llistat(List *hash_list, RBTree *tree, int numarxius)
+//void indexar_llista_enllasada( RBTree *tree, List *hash_list, int numarxius)
+//{
+//    int pos, len;
+//    RBData *treeData;
+//    ListItem *current;
+//
+//    current = hash_list->first;
+//
+//    while (current != NULL)
+//    {
+//
+//        if ( (treeData = findNode(  tree, current->data->primary_key)) )
+//        {   // si hem trobat el node
+//            
+//            pos = treeData->num++;
+//            treeData->string[pos] = current->data->numTimes;
+//            
+//        }else{
+//            // If the key is not in the tree, allocate memory for the data
+//            // and insert in the tree
+//            
+//            len = strlen(current->data->primary_key);
+//            
+//            treeData = malloc(sizeof(RBData));
+//            // allocatamos el espacio necesario
+//            treeData->primary_key = malloc( (sizeof(char) * len)+1 );
+//            // copiamos la pk a treeData
+//            strcpy(treeData->primary_key, current->data->primary_key);
+//            treeData->string = malloc(sizeof(char) * numarxius);
+//            treeData->string[0] = current->data->numTimes;
+//            treeData->num = 1;
+//
+//            insertNode( tree, treeData );
+//        }
+//
+//        current = current->next;
+//    }
+//}
+
+/**
+ * Funcio que rep un tree i un arxiu procesar en format hash list 
+ * i l'indexa
+ * @ tree : arbre on s'indexa
+ * @ aproc : arxiu procesat a indexar
+ * @ fileid : numero d'arxiu a procesar
+ * */
+void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  int arxiu)
 {
-    //TODO
-    int pos, len;
+    int i, len, j;
     RBData *treeData;
-    ListItem *current;
+    ListItem *currentItem;
+    ListData *data;
 
-    current = hash_list->first;
 
-    while (current != NULL)
+    // recorremos cada posicion de la lista hash
+    for(i = 0; i < aproc->length; i++)
     {
-        if ( (treeData = findNode(  tree, current->data->primary_key)) ){
-            
-            pos = treeData->num++;
-            treeData->string[pos] = current->data->numTimes;
-            
-        }else{
-            // If the key is not in the tree, allocate memory for the data
-            // and insert in the tree
-            
-            len = strlen(current->data->primary_key);
-            
-            treeData = malloc(sizeof(RBData));
-            // allocatamos el espacio necesario
-            treeData->primary_key = malloc( (sizeof(char) * len)+1 );
-            // copiamos la pk a treeData
-            strcpy(treeData->primary_key, current->data->primary_key);
-            treeData->string = malloc(sizeof(char) * numarxius);
-            treeData->string[0] = current->data->numTimes;
-            treeData->num = 1;
-
-            insertNode( tree, treeData );
+        if(DUMP_LIST){
+            printf("Dumping list %i, file %i\n", i, arxiu);
+            dumpList(aproc->data[i]);
+            printf("*\t*\t*\n");
         }
+        //indexamos el contenido de esta lista enlazada
+        //indexar_llista_enllasada(tree, aproc->data[i], aproc->length);
 
-        current = current->next;
+        //recuperem el primer node de la llista
+        currentItem = aproc->data[i]->first;
+        while(currentItem != NULL)
+        {
+            data = currentItem->data;
+            //busquem la paraula a l'arbre
+            treeData = findNode(tree, data->primary_key);
+            if(treeData != NULL) // si la paraula esta a l'arbre
+            {
+                // augmentem en 1 el numero d'arxius en el que surt la paraula
+                // i marquem el numero de cops que surt a l'arxiu
+                treeData->numFiles++;
+                treeData->numTimes[arxiu] = data->numTimes;
+
+            }
+            else
+            {   // si no esta, hem d'allocatar, inicialitzar el data
+                // copiar la paraula, copiar el numero de cops per arxiu
+                // i aumengtar el numer d'arxus 
+                treeData = malloc(sizeof(RBData));
+
+                len = strlen(data->primary_key);
+                initRBData(treeData, len,num_arxius);
+                strcpy(treeData->primary_key, data->primary_key);
+                treeData->numTimes[arxiu] = data->numTimes;
+                treeData->numFiles++;
+                insertNode(tree, treeData);
+
+            }
+            currentItem = currentItem->next;
+
+        }
     }
-    
 }
 
 /**
@@ -69,17 +137,9 @@ int processar_llista_arxius(Str_array *arxius, RBTree *tree)
         if(!fl) continue;
 
         arxiu_procesat = fparser(fl);
+        // un cop tenim l'arxiu procesat en una hash_list, l'indexem
+        indexar_en_llista_global(tree, arxiu_procesat, arxius->length,  i);
 
-        // todo va bien, no devuelve NULL,  vamos a indexar
-        for( j = 0; j < arxiu_procesat->length; j++ )
-        {
-            // Debug hash list
-                //printf("\n ---> Hash list index %i \n\n", j);
-                //dumpList(arxiu_procesat->data[j]);
-            indexar_llistat( arxiu_procesat->data[j] , tree, numarxius);
-            //printf("tengo %i \n", arxiu_procesat->data[j]->numItems);
-        }
-        
         fclose(fl);
         
         // alliberem memoria
@@ -89,6 +149,7 @@ int processar_llista_arxius(Str_array *arxius, RBTree *tree)
     }
 
 }
+
 
 /**
  *
@@ -126,11 +187,11 @@ int main(int argc, char **argv)
     free(paraules);
     
     /*P2: testeo cutre del arbol*/
-    data = tree.root->right->data;  
-    printf("palabra: %s | puntero %p | numfiles: %i | info: %i\n", data->primary_key, data->primary_key, 
-           data->num, data->string[0]);
+    //data = tree.root->right->data;  
+    //printf("palabra: %s | puntero %p | numfiles: %i | info: %i | total %i \n", data->primary_key, data->primary_key, data->numFiles, data->numTimes[0], data->total_);
   
     /* Delete the tree */
+    if(DUMP_TREE) dumpTree(&tree);
     deleteTree( &tree );
     
     return 0;
