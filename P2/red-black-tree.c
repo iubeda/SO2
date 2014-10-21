@@ -26,6 +26,51 @@
 
 #include "red-black-tree.h"
 
+
+void initRBData(RBData *data, int len_primary_key, int num_files)
+{
+    int i;
+    data->primary_key = malloc( sizeof(char) * ( len_primary_key + 1) );
+    data->numTimes = malloc(sizeof(int) * num_files);
+    data->numFiles = 0; // numero d'arxius en els que surt
+    data->total_= num_files; //numero d'arxius totals
+    // posem totes les posicions del vector a 0
+    for(i=0; i<num_files; i++)
+    {
+        data->numTimes[i] = 0;
+    }
+}
+
+/**
+ * P2:
+ * Imprime los datos
+ */
+static void dumpRBData(RBData *data)
+{
+    int extended = 0;
+    int iter, num_times;
+    num_times = 0;
+    for(iter = 0; iter < data->total_; iter++)
+    {
+        num_times += data->numTimes[iter];
+    }
+    if(extended)
+    {
+        printf("Primary key\t %s\n", data->primary_key);
+        printf("NumFiles\t %i\n", data->numFiles);
+        printf("[");
+        for(iter = 0; iter < data->total_; iter++)
+        {
+            printf("%i,", data->numTimes[iter]);
+        }
+        printf("] : %i\n", num_times);
+
+    }
+    else
+    {
+        printf("(%i, %s)\n", num_times, data->primary_key);
+    }
+}
 /**
  *
  * Free data element. The user should adapt this function to their needs.  This
@@ -35,14 +80,10 @@
 
 static void freeRBData(RBData *data)
 {
-  if (data->string)
-    free(data->string);
-  
-  /*P2: liberamos la primary key que ahora es char  */
-  if(data->primary_key)
-      free(data->primary_key);
-
-  free(data);
+    /*P2: Liberamos el vector de cantidades, la primary key  y el struct*/
+    free(data->numTimes);
+    free(data->primary_key);
+    free(data);
 }
 
 /**
@@ -330,3 +371,33 @@ void deleteTree(RBTree *tree)
 }
 
 
+/**
+ *  P2:
+ *  Function used to dump a tree. Do not call directly. 
+ *
+ */
+
+static void dumpTreeRecursive(Node *x)
+{
+  if (x->right != NIL)
+    dumpTreeRecursive(x->right);
+
+  if (x->left != NIL)
+    dumpTreeRecursive(x->left);
+
+  dumpRBData(x->data);
+}
+
+
+/**
+ *  P2:
+ *  Dump a tree. All the nodes and all the data pointed to by
+ *  the tree is deleted. 
+ *
+ */
+
+void dumpTree(RBTree *tree)
+{
+  if (tree->root != NIL)
+    dumpTreeRecursive(tree->root);
+}

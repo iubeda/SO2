@@ -31,8 +31,9 @@ typedef struct RBData_
 
     // This is the additional information that will be stored
     // within the structure.
-    char *string;   /*P2: informacion de cada archivo  */
-    int num;        /*P2: numero de archivos en los que sale */
+    int *numTimes;   /*P2: informacion de cada archivo  */
+    int numFiles;        /*P2: numero de archivos en los que sale */
+    int total_; /*P2: numero total de archivos */
 } RBData;
 
 /**
@@ -70,9 +71,10 @@ typedef struct RBTree_ {
  * red-black-tree.c have been included here.
  */
 
+void initRBData(RBData *treeData, int len_primary_key, int num_files);
 void initTree(RBTree *tree);
 void insertNode(RBTree *tree, RBData *data);
 RBData *findNode(RBTree *tree, TYPE_RBTREE_PRIMARY_KEY *primary_key); 
 void deleteTree(RBTree *tree);
-
+void dumpTree(RBTree *tree);
 #endif
