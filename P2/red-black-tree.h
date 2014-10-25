@@ -13,6 +13,13 @@
 
 #define TYPE_RBTREE_PRIMARY_KEY char /*P2: la clau ara es la propia paraula */
 
+
+typedef struct LONGEST{
+    int length; // longitud del la palabra
+    int file;   // numero de fitxer
+    char *word; // la palabra
+}Longest;
+
 /**
  *
  * This structure holds the information to be stored at each node. Change this

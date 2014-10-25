@@ -13,6 +13,7 @@
 #define DUMP_TREE 1
 
 
+Longest maslarga = {0, 0, NULL};
 
 
 /**
@@ -71,7 +72,7 @@ void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  i
     ListItem *currentItem;
     ListData *data;
 
-
+    
     // recorremos cada posicion de la lista hash
     for(i = 0; i < aproc->length; i++)
     {
@@ -87,6 +88,14 @@ void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  i
         currentItem = aproc->data[i]->first;
         while(currentItem != NULL)
         {
+            
+           /* if(maslarga.length < strlen(data->primary_key)){
+                maslarga.length = strlen(data->primary_key);
+                maslarga.word = malloc( sizeof(char) * ( strlen(data->primary_key) + 1) );
+                
+                //strcpy(maslarga.word,data->primary_key);
+            }
+            */
             data = currentItem->data;
             //busquem la paraula a l'arbre
             treeData = findNode(tree, data->primary_key);
@@ -99,7 +108,11 @@ void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  i
 
             }
             else
-            {   // si no esta, hem d'allocatar, inicialitzar el data
+            {   
+
+                
+                
+                // si no esta, hem d'allocatar, inicialitzar el data
                 // copiar la paraula, copiar el numero de cops per arxiu
                 // i aumengtar el numer d'arxus 
                 treeData = malloc(sizeof(RBData));
@@ -110,7 +123,16 @@ void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  i
                 treeData->numTimes[arxiu] = data->numTimes;
                 treeData->numFiles++;
                 insertNode(tree, treeData);
-
+                
+                
+                // si esta palabra es mas larga que la almacenada como larga, la guardamos
+                if(maslarga.length < len)
+                {
+                    maslarga.length = len;
+                    maslarga.file = arxiu;
+                    maslarga.word = treeData->primary_key;
+                }
+                
             }
             currentItem = currentItem->next;
 
@@ -161,6 +183,9 @@ int main(int argc, char **argv)
     Str_array *paraules;
     RBTree tree;
     RBData *data;
+    //maslarga = malloc(sizeof(Longest));
+    //maslarga.length = 0;
+    //maslarga.word = NULL;
     
     /* comprobem si hi ha parametre d'entrada */
     if (argc != 2)
@@ -192,7 +217,10 @@ int main(int argc, char **argv)
   
     /* Delete the tree */
     if(DUMP_TREE) dumpTree(&tree);
-    deleteTree( &tree );
     
+    printf("Palabra mas larga: word: %s | longitud: %i | fichero: %i\n", maslarga.word, maslarga.length, maslarga.file);
+    
+    deleteTree( &tree );
+    //  free(maslarga);
     return 0;
 }

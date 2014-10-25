@@ -50,6 +50,7 @@ static void dumpRBData(RBData *data)
     int extended = 0;
     int iter, num_times;
     num_times = 0;
+    
     for(iter = 0; iter < data->total_; iter++)
     {
         num_times += data->numTimes[iter];
@@ -272,7 +273,7 @@ static void insertFixup(RBTree *tree, Node *x) {
 
 void insertNode(RBTree *tree, RBData *data) {
   Node *current, *parent, *x;
-
+  
   /* Find where node belongs */
   current = tree->root;
   parent = 0;
