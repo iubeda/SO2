@@ -1,0 +1,14 @@
+==2834== Memcheck, a memory error detector
+==2834== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
+==2834== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==2834== Command: ./practica2 llista2.cfg
+==2834== 
+==2834== 
+==2834== HEAP SUMMARY:
+==2834==     in use at exit: 0 bytes in 0 blocks
+==2834==   total heap usage: 185,282 allocs, 185,282 frees, 3,199,038 bytes allocated
+==2834== 
+==2834== All heap blocks were freed -- no leaks are possible
+==2834== 
+==2834== For counts of detected and suppressed errors, rerun with: -v
+==2834== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)
