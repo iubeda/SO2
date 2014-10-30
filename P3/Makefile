@@ -6,7 +6,7 @@ LFLAGS = -lm
 
 FILES_C = main.c file-parser.c file-list.c linked-list.c hash-list.c red-black-tree.c
 
-TARGET = practica2
+TARGET = practica3
 
 # There is no need to change the instructions below this
 # line
