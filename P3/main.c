@@ -33,9 +33,10 @@ Longest maslarga = {0, 0, NULL};
 /**
  * Funcio que rep un tree i un arxiu procesar en format hash list 
  * i l'indexa
- * @ tree : arbre on s'indexa
+ * @ tree : arbre on s'indexar
  * @ aproc : arxiu procesat a indexar
- * @ fileid : numero d'arxiu a procesar
+ * @ num_arxius : numero dp'arxius total
+ * @ arxiu : numero d'arxiu a procesar
  * */
 void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  int arxiu)
 {
@@ -104,6 +105,9 @@ void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  i
 
 /**
  * procesa un llistat d arxius
+ * @ arxius : estructura tipus Str_array que conte un array de punters a string 
+ *              i la longitud de l'array
+ * @ tree : arbre on s'indexaran els arxius
  */
 int processar_llista_arxius(Str_array *arxius, RBTree *tree)
 {

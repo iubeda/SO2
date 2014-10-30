@@ -31,8 +31,10 @@ static void show_words(char *words[], int nwords)
 
 }
 */
-/*
+/**
  * Funcio que allibera de memoria les paraules
+ * @ words : punter a array de chars
+ * @ nwords : longitud de words
  */
 static void free_words(char *words[], int nwords)
 {
@@ -42,8 +44,9 @@ static void free_words(char *words[], int nwords)
 
 }
 
-/*
+/**
  * funcio que fa un malloc de la paraula en el array y retorna un punter
+ * @ word: punter a char amb la paraula
  */
 
 char *allocword(char *word)
@@ -62,6 +65,7 @@ char *allocword(char *word)
 
 /**
  * Parsea un archivo y devuelve una hash list con todas las palabras
+ * @ fl : arxiu de tipus FILE
  */
 Hash_list *fparser(FILE *fl)
 {

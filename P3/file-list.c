@@ -4,7 +4,10 @@
 #include "file-list.h"
 #include "include/const.h"
 
-
+/**
+ * Funcio que llegeix un arxiu i retorna una structura tipus str_array amb les lines
+ * @ fname : nom del arxiu a procesar
+ */
 Str_array *flist(char *fname)
 {
     char str[MAX_PATH_LENGTH];
