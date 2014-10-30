@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "include/const.h"
+#include "file-list.h"
+#include "file-parser.h"
+#include "linked-list.h"
+
+/**
+ * indexa un arxiu en estructura global
+ */
+int indexar_llistat(List hash_list[])
+{
+    //TODO
+}
+
+/**
+ * procesa un llistat d arxius
+ */
+int processar_llista_arxius(STR_ARRAY paraules)
+{
+    int i,j;
+    List *arxiuProcessat;
+    //TODO
+    
+    for(i=0; i < paraules.length; i++){
+        //processar_arxiu(paraules.data[i]);
+        // call fparser bro
+        if( (arxiuProcessat = fparser(paraules.data[i])) ){
+            // todo va bien vamos a indexar
+            for(j=0; j<MAX_ARRAY_LINKED_LISTS; j++){
+                
+            }
+            
+        }else{
+            // fail, no indexo
+        }
+            
+    }
+
+}
+
+/**
+ *
+ * Main function
+ *
+ */
+int main(int argc, char **argv)
+{
+    STR_ARRAY paraules;
+    /* comprobem si hi ha parametre d'entrada */
+    if (argc != 2)
+    {
+        printf("Exemple d'us: %s fitxer.cfg\n", argv[0]);
+        exit(1);
+    }
+
+    /* cridem a la funcio del llistat de paraules que retorna un struct */
+    paraules = flist(argv[1]);
+    processar_llista_arxius(paraules);
+    /*
+    int iter;
+    for(iter = 0; iter < paraules.length; iter++)
+    {
+        printf("%s\n", paraules.data[iter]);
+        free(paraules.data[iter]);
+    }
+    */
+    free(paraules.data);
+    return 0;
+}
