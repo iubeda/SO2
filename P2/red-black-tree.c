@@ -47,7 +47,7 @@ void initRBData(RBData *data, int len_primary_key, int num_files)
  */
 static void dumpRBData(RBData *data)
 {
-    int extended = 0;
+    int extended = 1;
     int iter, num_times;
     num_times = 0;
     for(iter = 0; iter < data->total_; iter++)
