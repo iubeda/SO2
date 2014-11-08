@@ -10,27 +10,6 @@
 
 
 
-/*
- * Funcio que imprimeix una paraula per pantalla
- */
-/*
-static void show_word(char *word)
-{
-    printf("Paraula valida: %s\n", word);
-}
-*/
-/*
- * Funcio que imprimeix un llistat de paraules
- */
-/*
-static void show_words(char *words[], int nwords)
-{
-    int i = 0;
-    while(i < nwords)
-        show_word(words[i++]);
-
-}
-*/
 /**
  * Funcio que allibera de memoria les paraules
  * @ words : punter a array de chars

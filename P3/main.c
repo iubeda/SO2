@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "include/const.h"
+#include "include/functions.h"
+#include "view.h"
 #include "file-list.h"
 #include "file-parser.h"
 #include "linked-list.h"
@@ -13,22 +15,21 @@
 #define DUMP_TREE 1
 
 
-#define CREACION 1
-#define GUARDAR 2
-#define LEER 3
-#define GRAFICA 4
-#define SALIR 5
 
 
-typedef struct LONGEST{
-    int length; // longitud del la palabra
-    int file;   // numero de fitxer
-    char *word; // la palabra
-}Longest;
+
 
 Longest maslarga = {0, 0, NULL};
 
+func funcionalitat[ NFUNCTIONS ] = {
+    crear_arbre,
+    NULL,   //TODO
+    NULL,   //TODO
+    NULL,    //TODO
+    NULL //sortir no es funcio
+};
 
+RBTree tree;
 
 /**
  * Funcio que rep un tree i un arxiu procesar en format hash list 
@@ -38,7 +39,7 @@ Longest maslarga = {0, 0, NULL};
  * @ num_arxius : numero dp'arxius total
  * @ arxiu : numero d'arxiu a procesar
  * */
-void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  int arxiu)
+static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  int arxiu)
 {
     int i, len, j;
     RBData *treeData;
@@ -109,7 +110,7 @@ void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  i
  *              i la longitud de l'array
  * @ tree : arbre on s'indexaran els arxius
  */
-int processar_llista_arxius(Str_array *arxius, RBTree *tree)
+static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
 {
     int i,j, numarxius;
     Hash_list *arxiu_procesat;
@@ -138,27 +139,45 @@ int processar_llista_arxius(Str_array *arxius, RBTree *tree)
 
 }
 
+void crear_arbre()
+{
 
-int menu(){
+    Str_array *paraules;
+    int iter;
+    char file[MAX_PATH_LENGTH];
 
-    int opcion;
+    printf("Donam el arxiu de configuracio:\n");
+    scanf("%s", file);
     
-    printf("/**************************************************/\n");
-    printf("/**************** SO2 - Practica 3 ****************/\n");
-    printf("/**************************************************/\n");
-    printf("    (1) Creacio de l'arbre\n");
-    printf("    (2) Emmagatzema l'arbre\n");
-    printf("    (3) Lectura d'un arbre\n");
-    printf("    (4) Grafica\n");
-    printf("    (5) Sortir\n");
-    printf("/**************************************************/\n");
-    printf("Selecciona una opcio:\n");
-    scanf("%d",&opcion);
+    /* cridem a la funcio del llistat de paraules que retorna un struct */
+    paraules = flist(file);
+    processar_llista_arxius(paraules, &tree);
     
-    return opcion;
+    
+    if(DUMP_TREE) dumpTree(&tree);
+
+    printf("Palabra mas larga: %s\n"
+        "de longitud: %i\naparece en el fichero: %s\n",
+        maslarga.word, maslarga.length, paraules->data[maslarga.file]);
+
+    // de moment podem eliminar les dades del arxiu de configuracio
+    // aqui
+    for(iter = 0; iter < paraules->length; iter++)
+    {
+        free(paraules->data[iter]);
+    }
+    free(paraules->data);
+    free(paraules);
 }
-
-
+void deploy()
+{
+    // iniciamos el arbol
+    initTree(&tree);
+}
+void freeall()
+{
+    deleteTree( &tree );
+}
 /**
  *
  * Main function
@@ -166,66 +185,11 @@ int menu(){
  */
 int main()
 {
-    Str_array *paraules;
-    RBTree tree;
-    RBData *data;
-    int iter, opt;
-    char file[100];
-   
+    deploy();
 
-    opt = menu();
-    
-    
-    switch(opt){           // creacio de arbre
-        
-        case CREACION:
-        
-            printf("Donam el arxiu de configuracio:\n");
-            scanf("%s", file);
-            
-            
-            // iniciamos el arbol
-            initTree(&tree);
-            
-            /* cridem a la funcio del llistat de paraules que retorna un struct */
-            paraules = flist(file);
-            processar_llista_arxius(paraules, &tree);
-            
-            
-            if(DUMP_TREE) dumpTree(&tree);
-        
-            printf("Palabra mas larga: %s\n"
-                "de longitud: %i\naparece en el fichero: %s\n",
-                maslarga.word, maslarga.length, paraules->data[maslarga.file]);
-        
-        break;
-        case GUARDAR:
-        break;
-        
-        case LEER:
-        break;
-        
-        case GRAFICA:
-        break;
-        
-        case SALIR:
-                    
-            /* Delete the tree */
-            deleteTree( &tree );
-            
-            // delete paraules
-            for(iter = 0; iter < paraules->length; iter++)
-            {
-                free(paraules->data[iter]);
-            }
-            free(paraules->data);
-            free(paraules);
-            exit(1);
-        break;
-        
-    }
-    
-    
+    menu();
+
+    freeall();
 
     return 0;
 }

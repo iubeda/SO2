@@ -68,6 +68,16 @@ typedef struct RBTree_ {
     Node *root;                   /* root of Red-Black tree */
 } RBTree;
 
+/**
+ * Structure to with the longest word in the tree
+ */
+typedef struct LONGEST{
+    int length; // longitud del la palabra
+    int file;   // numero de fitxer
+    char *word; // la palabra
+}Longest;
+
+
 /*
  * Function headers. Note that not all the functions of
  * red-black-tree.c have been included here.
