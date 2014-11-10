@@ -10,14 +10,6 @@
 #include "hash-list.h"
 #include "red-black-tree.h"
 
-#define DEBUG 1
-#define DUMP_LIST 0
-#define DUMP_TREE 1
-
-
-
-
-
 
 Longest maslarga = {0, 0, NULL};
 
@@ -30,6 +22,7 @@ func funcionalitat[ NFUNCTIONS ] = {
 };
 
 RBTree tree;
+
 
 /**
  * Funcio que rep un tree i un arxiu procesar en format hash list 
@@ -50,7 +43,7 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
     // recorremos cada posicion de la lista hash
     for(i = 0; i < aproc->length; i++)
     {
-        if(DUMP_LIST){
+        if(DEBUG){
             printf("Dumping list %i, file %i\n", i, arxiu);
             dumpList(aproc->data[i]);
             printf("*\t*\t*\n");
@@ -138,28 +131,31 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
     }
 
 }
-
-void crear_arbre()
+/**
+ * Funcio que crea l'estructura principal
+ * Es la funcio principal en la creacio de l'arbre. Un cop es crida aquesta
+ * funcio, les altres es van cridant desde dins d'aquesta.
+ * @ path : arxiu de configuracio amb la ruta dels arxius a parsejar
+ */
+void crear_arbre(char *path)
 {
 
     Str_array *paraules;
     int iter;
-    char file[MAX_PATH_LENGTH];
 
-    printf("Donam el arxiu de configuracio:\n");
-    scanf("%s", file);
     
     /* cridem a la funcio del llistat de paraules que retorna un struct */
-    paraules = flist(file);
+    paraules = flist(path);
     processar_llista_arxius(paraules, &tree);
     
     
-    if(DUMP_TREE) dumpTree(&tree);
-
-    printf("Palabra mas larga: %s\n"
-        "de longitud: %i\naparece en el fichero: %s\n",
-        maslarga.word, maslarga.length, paraules->data[maslarga.file]);
-
+    if(DEBUG)
+    {
+        dumpTree(&tree);
+        printf("Palabra mas larga: %s\n"
+            "de longitud: %i\naparece en el fichero: %s\n",
+            maslarga.word, maslarga.length, paraules->data[maslarga.file]);
+    }
     // de moment podem eliminar les dades del arxiu de configuracio
     // aqui
     for(iter = 0; iter < paraules->length; iter++)

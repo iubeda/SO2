@@ -10,7 +10,7 @@
 #define GENERAR_GRAFICA 3
 #define SORTIR 4
 
-void crear_arbre();
+void crear_arbre(char *path);
 
 typedef void(*func)();
 extern func funcionalitat[];

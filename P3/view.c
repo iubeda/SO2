@@ -60,14 +60,21 @@ int get_option()
 void menu()
 {
     int option;
+    char file[MAX_PATH_LENGTH];
+
     option = get_option();
+    
     while(option != SORTIR)
     {
-        option = get_option();
         switch(option)
         {
             case CREAR_ARBRE:
-                (funcionalitat[option])();
+                
+                printf("Donam el arxiu de configuracio:\n");
+                scanf("%s", file);
+                
+                (funcionalitat[option])(file);
+
             break;
             case DESSAR_ARBRE:
             //TODO
@@ -79,6 +86,7 @@ void menu()
             //TODO
             break;
         }
+        option = get_option();
     }
     printf("BYE\n");
 }
