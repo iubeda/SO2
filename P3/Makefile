@@ -1,7 +1,8 @@
 # This is the makefile that generates the executable
 
 #CFLAGS = -Wall -Werror -g
-CFLAGS = -g
+#CFLAGS = -Wall -g 
+CFLAGS = -Wall -g -DDEBUG=0
 LFLAGS = -lm
 
 FILES_C = main.c view.c file-parser.c file-list.c linked-list.c hash-list.c red-black-tree.c
