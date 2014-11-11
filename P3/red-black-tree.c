@@ -47,7 +47,6 @@ void initRBData(RBData *data, int len_primary_key, int num_files)
  */
 static void dumpRBData(RBData *data)
 {
-    int extended = 0;
     int iter, num_times;
     num_times = 0;
     
@@ -55,7 +54,7 @@ static void dumpRBData(RBData *data)
     {
         num_times += data->numTimes[iter];
     }
-    if(extended)
+    if(DEBUG)
     {
         printf("Primary key\t %s\n", data->primary_key);
         printf("NumFiles\t %i\n", data->numFiles);
@@ -72,6 +71,105 @@ static void dumpRBData(RBData *data)
         printf("(%i, %s)\n", num_times, data->primary_key);
     }
 }
+
+/**
+ * P3
+ * Serializa el Data en disco
+ * 
+ * El data consta:
+ *  @primary_key{*char} la palabra
+ *  @numTimes{*int} numero de aparicions por archivo
+ *  @numFilesl{int} numero de archivos en los que aparece
+ *  @total_{int} numero archivos total
+ *
+ *  El formato y orden de guardado es el siguiente
+ *
+ *   {int}{*char}{int}{int}{*int}
+ *
+ *  @{int} longitud primary key
+ *  + - @{*char} la primary key
+ *
+ *  @{int} numero de apareciciones en archivos
+ *
+ *  @{int} numero de archivos total
+ *  + - @{*int} numero de apariciones por archivo
+ *
+ *
+ * Los datos anidados son arrays del tipo indicado cuya longitud
+ * viene especificada por el parametro anterior
+ *
+ */
+static void serializeRBData(RBData *data, FILE  *fl)
+{
+    int lword, lnumTimes;
+    lword = strlen(data->primary_key);
+    lnumTimes = data->total_;
+
+    /**
+     * primary_key y numTimes son punteros
+     * el resto son valores
+     */
+
+    fwrite( &lword, sizeof(int), 1, fl );
+    fwrite( data->primary_key, sizeof(TYPE_RBTREE_PRIMARY_KEY), lword, fl );
+    fwrite( &(data->numFiles), sizeof(int), 1, fl );
+    fwrite( &lnumTimes, sizeof(int), 1, fl );
+    fwrite( data->numTimes, sizeof(int), lnumTimes, fl);
+}
+
+/**
+ * P3
+ * Deserializa el arbol
+ * El arbol se deserializa en base a la misma estructura con la que
+ * fue serializado
+ */
+void deserializeTree(RBTree *tree, FILE *fl)
+{
+    RBData *data;
+    int lword, lnumTimes, *numTimes, numFiles;
+    TYPE_RBTREE_PRIMARY_KEY *primary_key;
+
+//    while(!feof(fl))
+//
+
+    //len primary key
+    fread( &lword, sizeof(int), 1, fl );
+
+    while( !feof(fl) )
+    {
+        data = malloc(sizeof(RBData));
+
+        // Primary key
+        primary_key = malloc( sizeof(TYPE_RBTREE_PRIMARY_KEY) * ( lword + 1 ) );
+        //*(primary_key + lword) = '\0';
+        primary_key[lword] = '\0';
+        fread( primary_key, sizeof(TYPE_RBTREE_PRIMARY_KEY), lword, fl);
+        // numFiles
+        fread( &numFiles, sizeof(int), 1, fl);
+        // len numTimes
+        fread( &lnumTimes, sizeof(int), 1, fl);
+        //numTimes
+        numTimes = malloc( sizeof(int) * lnumTimes );
+        fread(numTimes, sizeof(int), lnumTimes, fl);
+
+        data->primary_key = primary_key;
+        data->numFiles = numFiles;
+        data->numTimes = numTimes;
+        data->total_ = lnumTimes;
+
+        insertNode(tree, data);
+
+        if(DEBUG)
+        {
+            dumpRBData(data);
+        }
+        //len primary key
+        fread( &lword, sizeof(int), 1, fl );
+
+    }
+
+}
+
 /**
  *
  * Free data element. The user should adapt this function to their needs.  This
@@ -393,7 +491,7 @@ static void dumpTreeRecursive(Node *x)
 /**
  *  P2:
  *  Dump a tree. All the nodes and all the data pointed to by
- *  the tree is deleted. 
+ *  the tree is dumped
  *
  */
 
@@ -401,4 +499,33 @@ void dumpTree(RBTree *tree)
 {
   if (tree->root != NIL)
     dumpTreeRecursive(tree->root);
+}
+/**
+ *  P3:
+ *  Function used to serialize a tree. Do not call directly. 
+ *
+ */
+
+static void serializeTreeRecursive(Node *x, FILE *fl)
+{
+  if (x->right != NIL)
+    serializeTreeRecursive(x->right, fl);
+
+  if (x->left != NIL)
+    serializeTreeRecursive(x->left, fl);
+
+  serializeRBData(x->data, fl);
+}
+
+
+
+/**
+ * P3: 
+ * Serializes a tree. All the nodes and all the data pointed to by
+ * the tree is serialized
+ */
+void serializeTree(RBTree *tree, FILE *fl)
+{
+    if(tree->root !=NIL)
+        serializeTreeRecursive(tree->root, fl);
 }

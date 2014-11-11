@@ -39,7 +39,7 @@ typedef struct RBData_
 } RBData;
 
 /**
- *
+*
  * The node structure 
  *
  */
@@ -89,4 +89,6 @@ void insertNode(RBTree *tree, RBData *data);
 RBData *findNode(RBTree *tree, TYPE_RBTREE_PRIMARY_KEY *primary_key); 
 void deleteTree(RBTree *tree);
 void dumpTree(RBTree *tree);
+void serializeTree(RBTree * tree, FILE *fl);
+void deserializeTree(RBTree * tree, FILE *fl);
 #endif
