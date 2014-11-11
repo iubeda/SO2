@@ -10,18 +10,18 @@
 
 
 
-/**
- * Funcio que allibera de memoria les paraules
- * @ words : punter a array de chars
- * @ nwords : longitud de words
- */
-static void free_words(char *words[], int nwords)
-{
-    int i = 0;
-    while(i < nwords)
-        free(words[i++]);
-
-}
+///**
+// * Funcio que allibera de memoria les paraules
+// * @ words : punter a array de chars
+// * @ nwords : longitud de words
+// */
+//static void free_words(char *words[], int nwords)
+//{
+//    int i = 0;
+//    while(i < nwords)
+//        free(words[i++]);
+//
+//}
 
 /**
  * funcio que fa un malloc de la paraula en el array y retorna un punter
@@ -34,7 +34,7 @@ char *allocword(char *word)
     char * newword;
     len = strlen(word);
     // allocatem len + 1 ja que len no inclueix el \0
-    newword = malloc( (sizeof(char) * len) + 1 );
+    newword = malloc( sizeof(char) *  ( len + 1 ) );
     // volquem la paraula amb strcpy
     strcpy(newword, word);
     // retornem el punter
@@ -48,7 +48,7 @@ char *allocword(char *word)
  */
 Hash_list *fparser(FILE *fl)
 {
-    int i, currentbff, nwords,caracter, wordexception, hashvalue;
+    int  currentbff, nwords,caracter, wordexception, hashvalue;
     int saveword;
     char buffer[MAX_WORD_LENGTH];
     
