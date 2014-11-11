@@ -13,15 +13,8 @@
 
 Longest maslarga = {0, 0, NULL};
 
-func funcionalitat[ NFUNCTIONS ] = {
-    crear_arbre,
-    NULL,   //TODO
-    NULL,   //TODO
-    NULL,    //TODO
-    NULL //sortir no es funcio
-};
 
-RBTree tree;
+RBTree *tree;
 
 
 /**
@@ -34,7 +27,7 @@ RBTree tree;
  * */
 static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  int arxiu)
 {
-    int i, len, j;
+    int i, len;
     RBData *treeData;
     ListItem *currentItem;
     ListData *data;
@@ -105,7 +98,8 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
  */
 static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
 {
-    int i,j, numarxius;
+    int i, numarxius;
+    FILE *fl;
     Hash_list *arxiu_procesat;
 
     numarxius = arxius->length;
@@ -113,7 +107,6 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
     // recorrem el llistat d'arxius
     for( i = 0; i < numarxius; i++ )
     {
-        FILE *fl;
         fl = fopen(arxius->data[i], "r");
         // si no podem obrir l'arxiu, pasem al seguent
         if(!fl) continue;
@@ -129,15 +122,16 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
         free(arxiu_procesat);
 
     }
-
+    return 0;
 }
+
 /**
  * Funcio que crea l'estructura principal
  * Es la funcio principal en la creacio de l'arbre. Un cop es crida aquesta
  * funcio, les altres es van cridant desde dins d'aquesta.
  * @ path : arxiu de configuracio amb la ruta dels arxius a parsejar
  */
-void crear_arbre(char *path)
+int create_data(char *path)
 {
 
     Str_array *paraules;
@@ -146,12 +140,12 @@ void crear_arbre(char *path)
     
     /* cridem a la funcio del llistat de paraules que retorna un struct */
     paraules = flist(path);
-    processar_llista_arxius(paraules, &tree);
+    processar_llista_arxius(paraules, tree);
     
     
     if(DEBUG)
     {
-        dumpTree(&tree);
+        dumpTree(tree);
         printf("Palabra mas larga: %s\n"
             "de longitud: %i\naparece en el fichero: %s\n",
             maslarga.word, maslarga.length, paraules->data[maslarga.file]);
@@ -164,15 +158,74 @@ void crear_arbre(char *path)
     }
     free(paraules->data);
     free(paraules);
+
+    return 0;
 }
+
+/**
+ * Stores the tree in memory
+ */
+int store_data(char *path)
+{
+    FILE *fl;
+    int msize = MAGIC_NUMBER_SIZE;
+    const char *magic = MAGIC_NUMBER;
+
+    // identificador del nostre tipus d'arxiu
+    fl = fopen(path, "w");
+    fwrite(magic, sizeof(char), msize, fl);
+
+    serializeTree(tree, fl);
+    fclose(fl);
+    return 0;
+}
+
+/**
+ * Stores the tree in memory
+ */
+int restore_data(char *path)
+{
+    FILE *fl;
+    int msize = MAGIC_NUMBER_SIZE;
+    char *fmagic;
+    const char *magic = MAGIC_NUMBER;
+
+    fmagic = malloc(sizeof(char) * msize);
+    fl = fopen(path, "r");
+    fread(fmagic, sizeof(char), msize, fl);
+   
+    // file no compatible
+    if(strncmp(magic, fmagic, msize) != 0 )
+    {
+        free(fmagic);
+        fclose(fl);
+        return 1;
+    }
+
+    deserializeTree(tree, fl);
+
+    free(fmagic);
+    fclose(fl);
+
+    if(DEBUG)
+    {
+        printf("RESTORE\n");
+        dumpTree(tree);
+    }
+    return 0;
+}
+
 void deploy()
 {
     // iniciamos el arbol
-    initTree(&tree);
+    tree = malloc(sizeof(RBTree));
+    initTree(tree);
 }
 void freeall()
 {
-    deleteTree( &tree );
+
+    deleteTree( tree );
+    free(tree);
 }
 /**
  *
@@ -183,7 +236,7 @@ int main()
 {
     deploy();
 
-    menu();
+    menu_principal();
 
     freeall();
 

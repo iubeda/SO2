@@ -7,6 +7,6 @@
 
 void show_options();
 int get_option();
-void menu();
+void menu_principal();
 extern char *labels[];
 #endif
