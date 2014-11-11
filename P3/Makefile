@@ -2,7 +2,7 @@
 
 #CFLAGS = -Wall -Werror -g
 #CFLAGS = -Wall -g 
-CFLAGS = -Wall -g -DDEBUG=0
+CFLAGS = -Wall -g -DDEBUG=1
 LFLAGS = -lm
 
 FILES_C = main.c view.c file-parser.c file-list.c linked-list.c hash-list.c red-black-tree.c
