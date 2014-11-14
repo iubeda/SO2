@@ -39,6 +39,32 @@ typedef struct RBData_
 } RBData;
 
 /**
+ * Structure to with the longest word in the tree
+ */
+typedef struct LONGEST{
+    int length; // longitud del la palabra
+    int file;   // numero de fitxer
+    char *word; // la palabra
+}Longest;
+
+/*
+ * Properties from the tree, created
+ * during function executions, such as longest
+ * word etc...
+ */
+typedef struct Properties_
+{
+    Longest *longest;
+}RBProperties;
+/**
+ * Configuration of the tree
+ */
+typedef struct RBDConf_
+{
+    int loaded;
+}RBConf;
+
+/**
 *
  * The node structure 
  *
@@ -65,17 +91,11 @@ typedef struct Node_ {
  */
 
 typedef struct RBTree_ {
+    RBConf *config;
+    RBProperties *properties;
     Node *root;                   /* root of Red-Black tree */
 } RBTree;
 
-/**
- * Structure to with the longest word in the tree
- */
-typedef struct LONGEST{
-    int length; // longitud del la palabra
-    int file;   // numero de fitxer
-    char *word; // la palabra
-}Longest;
 
 
 /*
