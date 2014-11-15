@@ -234,6 +234,11 @@ static Node sentinel = { NIL, NIL, 0, BLACK, NULL};
 
 void initTree(RBTree *tree)
 {
+    // iniciamos la configuracion
+    tree->config = malloc(sizeof(RBConf));
+    tree->config.loaded = 0;
+    // iniciamos las properties del tree
+    t
   tree->root = NIL;
 }
 
