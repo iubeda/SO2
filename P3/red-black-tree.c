@@ -117,6 +117,18 @@ static void serializeRBData(RBData *data, FILE  *fl)
     fwrite( data->numTimes, sizeof(int), lnumTimes, fl);
 }
 
+void resetTree(RBTree *tree)
+{
+    if(DEBUG)
+        printf("Existe un arbol cargado, lo eliminaremos primero\n");
+
+    deleteTree(tree);
+    //free(tree);
+    //tree = malloc(sizeof(RBTree));
+    initTree(tree);
+
+}
+
 /**
  * P3
  * Deserializa el arbol
@@ -215,6 +227,37 @@ static int compEQ(TYPE_RBTREE_PRIMARY_KEY *primary_key1, TYPE_RBTREE_PRIMARY_KEY
     return rc;
 }
 
+
+
+static void initTreeConf(RBTree *tree)
+{
+    // iniciamos la configuracion
+    tree->config = malloc(sizeof(RBConf));
+    tree->config->loaded = 0;
+}
+
+static void initTreeProperties(RBTree *tree)
+{
+    // iniciamos las properties del tree
+    tree->properties = malloc(sizeof(RBProperties));
+    tree->properties->longest = malloc(sizeof(Longest));
+    tree->properties->longest->length = 0;
+    tree->properties->longest->file = 0;
+    tree->properties->longest->word = NULL;
+
+}
+
+static void freeTreeConf(RBTree *tree)
+{
+    free(tree->config);
+}
+
+static void freeTreeProperties(RBTree *tree)
+{
+    free(tree->properties->longest);
+    free(tree->properties);
+}
+
 /**
  * 
  * PLEASE DO NOT CHANGE THE CODE BELOW UNLESS YOU REALLY KNOW WHAT YOU ARE
@@ -234,12 +277,9 @@ static Node sentinel = { NIL, NIL, 0, BLACK, NULL};
 
 void initTree(RBTree *tree)
 {
-    // iniciamos la configuracion
-    tree->config = malloc(sizeof(RBConf));
-    tree->config.loaded = 0;
-    // iniciamos las properties del tree
-    t
-  tree->root = NIL;
+    initTreeConf(tree);
+    initTreeProperties(tree);
+    tree->root = NIL;
 }
 
 /**
@@ -420,6 +460,8 @@ void insertNode(RBTree *tree, RBData *data) {
   }
 
   insertFixup(tree, x);
+    
+
 }
 
 /**
@@ -470,8 +512,12 @@ static void deleteTreeRecursive(Node *x)
 
 void deleteTree(RBTree *tree)
 {
-  if (tree->root != NIL)
-    deleteTreeRecursive(tree->root);
+    if (tree->root != NIL)
+        deleteTreeRecursive(tree->root);
+
+    freeTreeConf(tree);
+    freeTreeProperties(tree);
+
 }
 
 
