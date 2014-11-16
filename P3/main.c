@@ -215,6 +215,28 @@ int restore_data(char *path)
     return 0;
 }
 
+/**
+ *
+ *
+ */
+int show_graphics(){
+    FILE *fp;
+    
+    fp = popen("gnuplot", "w");
+	// formato de salida
+    fputs("set term svg\n", fp);
+    // archivo de salida
+    fputs("set out 'grafico.svg'\n", fp);
+    fputs("plot sin(x)\n", fp);
+	//fprintf(fp, "plot 'grafica2d.data' with lines, 'grafica2d_2.data' with lines\n");
+    
+    fflush(fp);
+    pclose(fp);
+
+  	return 0;
+}
+
+
 void deploy()
 {
     // iniciamos el arbol

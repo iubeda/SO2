@@ -6,11 +6,15 @@ int main()
     FILE *fp;
     fp = popen("gnuplot", "w");
     fprintf(fp, "set terminal x11 persist\n");
-    fprintf(fp, "plot sin(x)\n");
-    //fprintf(fp, "e\n");
+    //fputs("set term svg\n", fp);
+    //fputs("set out 'grafico.svg'\n", fp);
+    
+    // 2graficas superpuestas
+    fprintf(fp, "plot 'grafica2d.data' with lines, 'grafica2d_2.data' with lines\n");
+    
     fflush(fp);
-    getc(stdin);
-    return 0;
     pclose(fp);
+    //getc(stdin);
+    return 0;
 
 }
