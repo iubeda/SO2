@@ -18,7 +18,7 @@ func funcionalitat[ NFUNCTIONS ] = {
  */
 char *labels[ NFUNCTIONS ] = {
     "Crear arbre",
-    "Dessar_arbre",
+    "Dessar arbre",
     "Llegir arbre",
     "Generar grafica",
     "Sortir"
