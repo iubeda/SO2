@@ -140,9 +140,10 @@ static void serializeRBData(RBData *data, FILE  *fl)
 void deserializeTree(RBTree *tree, FILE *fl)
 {
     RBData *data;
-    int lword, lnumTimes, *numTimes, numFiles;
+    int lword, lnumTimes, *numTimes, numFiles, longest;
     TYPE_RBTREE_PRIMARY_KEY *primary_key;
 
+    longest = 0;
 //    while(!feof(fl))
 //
 
@@ -173,6 +174,13 @@ void deserializeTree(RBTree *tree, FILE *fl)
 
         insertNode(tree, data);
 
+        if(longest < lword)
+        {
+            longest = lword;
+            tree->properties->longest->length = longest;
+            
+        }
+        
         if(DEBUG)
         {
             dumpRBData(data);
