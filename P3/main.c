@@ -235,25 +235,27 @@ int restore_data(char *path)
  */
 int show_graphics(){
     FILE *fp;
-   
+  
+    // Generamos los datos necesarios para el histograma
     if(!tree->properties->histogram->loaded)
     {
+        generateHistogram(tree);
+        
         fp = fopen(HISTOGRAM_FILE, "w");
-
+        writeHistogram(tree, fp);
+        fclose(fp);
     }
 
+
     fp = popen("gnuplot", "w");
-	// formato de salida
-    fputs("set term svg\n", fp);
-    // archivo de salida
-    fputs("set out 'grafico.svg'\n", fp);
-    fputs("plot sin(x)\n", fp);
-	//fprintf(fp, "plot 'grafica2d.data' with lines, 'grafica2d_2.data' with lines\n");
-    
+    fprintf(fp, "set term svg\n"); // formato salida
+    fprintf(fp, "set out 'grafico.svg'\n"); // archivo salida
+    fprintf(fp, "plot '%s' with lines\n", HISTOGRAM_FILE); // comando
     fflush(fp);
+
     pclose(fp);
 
-  	return 0;
+    return 0;
 }
 
 int tree_loaded()

@@ -598,7 +598,14 @@ static void generateHistogramRecursive(RBTree *tree, Node *x)
     generateHistogramRecursive(tree, x->left);
 
     // aumentamos en 1
-    tree->properties->histogram->data[strlen(x->data->primary_key)]++;
+    if(DEBUG)
+    {
+        int len = strlen(x->data->primary_key);
+        printf("key %s len %i total %i\n", x->data->primary_key, len, tree->properties->histogram->data[len]);
+    }
+    int pos = strlen(x->data->primary_key);
+
+    tree->properties->histogram->data[pos] += 1;
 
 
 }
@@ -618,23 +625,37 @@ void serializeTree(RBTree *tree, FILE *fl)
  * P3 : 
  * Generate histogram
  */
-void generateHistogram(RBTree *tree, FILE *fl)
+void generateHistogram(RBTree *tree)
 {
     if(tree->root !=NIL)
     {
-        Histogram *histogram;
         Longest *longest;
+        int len;
+        unsigned int *data;
         int iter;
     
         longest = tree->properties->longest;
-        histogram = tree->properties->histogram;
-        histogram->length = longest->length + 1;   
-        histogram->data = malloc(sizeof(int) * histogram->length);
-        for(iter = 0; iter < histogram->length; iter++)
-            histogram->data[iter] = 0;
+        len = longest->length + 1;   
+        data = malloc(sizeof(unsigned int) * len);
+        for(iter = 0; iter < len; iter++)
+            data[iter] = 0;
 
+        tree->properties->histogram->data = data;
+        tree->properties->histogram->length = len;
         generateHistogramRecursive(tree, tree->root);
-        histogram->loaded = 1;
+
+        tree->properties->histogram->loaded = 1;
     }
+    else
+        tree->properties->histogram->loaded = 0;
 }
 
+void writeHistogram(RBTree *tree, FILE *fl)
+{
+    int i;
+    Histogram *hist = tree->properties->histogram;
+
+    for(i = 0; i < hist->length; i++)
+        fprintf(fl, "%i %i\n", i, hist->data[i]);
+
+}

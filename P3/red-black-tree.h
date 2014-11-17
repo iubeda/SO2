@@ -53,7 +53,7 @@ typedef struct HISTOGRAM_
 {
     int loaded;
     int length;
-    int *data;
+    unsigned int *data;
 }Histogram;
 
 /*
@@ -123,5 +123,6 @@ void dumpTree(RBTree *tree);
 void serializeTree(RBTree *tree, FILE *fl);
 void deserializeTree(RBTree *tree, FILE *fl);
 void resetTree(RBTree *tree);
-void generateHistogram(RBTree *tree, FILE *fl);
+void generateHistogram(RBTree *tree);
+void writeHistogram(RBTree *tree, FILE *fl);
 #endif
