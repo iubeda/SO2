@@ -178,7 +178,7 @@ void deserializeTree(RBTree *tree, FILE *fl)
         {
             longest = lword;
             tree->properties->longest->length = longest;
-            
+            tree->properties->longest->word = data->primary_key;
         }
         
         if(DEBUG)
