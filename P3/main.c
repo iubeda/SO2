@@ -76,12 +76,23 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
                 
                 // si esta palabra es mas larga que la almacenada como larga,
                 // la guardamos
-                if(maslarga.length < len)
+                /* selects which the longest word is */
+                len = strlen(data->primary_key);
+
+                if(tree->properties->longest->length < len)
                 {
-                    maslarga.length = len;
-                    maslarga.file = arxiu; // solo almacena el primer archivo
-                    maslarga.word = treeData->primary_key;
+                    //this data contains the new longest word
+                    tree->properties->longest->length = len;
+                    tree->properties->longest->file = arxiu;
+                    tree->properties->longest->word = treeData->primary_key;
                 }
+
+                //if(maslarga.length < len)
+                //{
+                //    maslarga.length = len;
+                //    maslarga.file = arxiu; // solo almacena el primer archivo
+                //    maslarga.word = treeData->primary_key;
+                //}
                 
             }
             currentItem = currentItem->next;
@@ -136,19 +147,21 @@ int create_data(char *path)
 
     Str_array *paraules;
     int iter;
+    Longest *maslarga;
+    maslarga = tree->properties->longest;
 
     
     /* cridem a la funcio del llistat de paraules que retorna un struct */
     paraules = flist(path);
     processar_llista_arxius(paraules, tree);
-    
+    tree->config->loaded = 1;
     
     if(DEBUG)
     {
         dumpTree(tree);
         printf("Palabra mas larga: %s\n"
             "de longitud: %i\naparece en el fichero: %s\n",
-            maslarga.word, maslarga.length, paraules->data[maslarga.file]);
+            maslarga->word, maslarga->length, paraules->data[maslarga->file]);
     }
     // de moment podem eliminar les dades del arxiu de configuracio
     // aqui
@@ -236,6 +249,10 @@ int show_graphics(){
   	return 0;
 }
 
+int tree_loaded()
+{
+    return tree->config->loaded;
+}
 
 void deploy()
 {
@@ -256,11 +273,11 @@ void freeall()
  */
 int main()
 {
-    deploy();
+    //deploy();
 
     menu_principal();
 
-    freeall();
+    //freeall();
 
     return 0;
 }

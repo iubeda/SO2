@@ -76,6 +76,8 @@ void menu_principal()
     int option;
     char file[MAX_PATH_LENGTH];
 
+    deploy();
+
     option = get_option();
     
     while(option != SORTIR)
@@ -85,6 +87,12 @@ void menu_principal()
             case CREAR_ARBRE:
                 printf("Arxiu de configuracio:\n");
                 scanf("%s", file);
+                if(tree_loaded())
+                {
+                    printf("Esborrant arbre carregat previament\n");
+                    freeall();
+                    deploy();
+                }
                 (funcionalitat[option])(file);
             break;
 
@@ -98,6 +106,13 @@ void menu_principal()
                 printf("Arxiu a llegir:\n");
                 scanf("%s", file);
                 
+                if(tree_loaded())
+                {
+                    printf("Esborrant arbre carregat previament\n");
+                    freeall();
+                    deploy();
+                }
+
                 if((funcionalitat[option])(file))
                 {
                     printf("Arxiu no compatible\n");
@@ -110,6 +125,8 @@ void menu_principal()
         }
         option = get_option();
     }
+
+    freeall();
     printf("BYE\n");
 }
 

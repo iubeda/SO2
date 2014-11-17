@@ -14,6 +14,10 @@ int create_data(char *path);
 int store_data(char *path);
 int restore_data(char *path);
 
+void deploy();
+void freeall();
+int tree_loaded();
+
 typedef int(*func)();
 extern func funcionalitat[];
 #endif
