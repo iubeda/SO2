@@ -248,8 +248,9 @@ int show_graphics(){
 
 
     fp = popen("gnuplot", "w");
-    fprintf(fp, "set term svg\n"); // formato salida
-    fprintf(fp, "set out 'grafico.svg'\n"); // archivo salida
+    //fprintf(fp, "set term svg\n"); // formato salida
+    //fprintf(fp, "set out 'grafico.svg'\n"); // archivo salida
+    fprintf(fp, "set terminal x11 persist\n");
     fprintf(fp, "plot '%s' with lines\n", HISTOGRAM_FILE); // comando
     fflush(fp);
 
