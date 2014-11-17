@@ -216,7 +216,8 @@ int restore_data(char *path)
     }
 
     deserializeTree(tree, fl);
-
+    tree->config->loaded = 1;
+    
     free(fmagic);
     fclose(fl);
 
@@ -234,7 +235,13 @@ int restore_data(char *path)
  */
 int show_graphics(){
     FILE *fp;
-    
+   
+    if(!tree->properties->histogram->loaded)
+    {
+        fp = fopen(HISTOGRAM_FILE, "w");
+
+    }
+
     fp = popen("gnuplot", "w");
 	// formato de salida
     fputs("set term svg\n", fp);

@@ -46,6 +46,15 @@ typedef struct LONGEST{
     int file;   // numero de fitxer
     char *word; // la palabra
 }Longest;
+/**
+ * Structure for the histogram
+ */
+typedef struct HISTOGRAM_
+{
+    int loaded;
+    int length;
+    int *data;
+}Histogram;
 
 /*
  * Properties from the tree, created
@@ -55,6 +64,7 @@ typedef struct LONGEST{
 typedef struct Properties_
 {
     Longest *longest;
+    Histogram *histogram;
 }RBProperties;
 /**
  * Configuration of the tree
@@ -113,4 +123,5 @@ void dumpTree(RBTree *tree);
 void serializeTree(RBTree *tree, FILE *fl);
 void deserializeTree(RBTree *tree, FILE *fl);
 void resetTree(RBTree *tree);
+void generateHistogram(RBTree *tree, FILE *fl);
 #endif

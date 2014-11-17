@@ -8,7 +8,7 @@ func funcionalitat[ NFUNCTIONS ] = {
     create_data,
     store_data,   //TODO
     restore_data,   //TODO
-    NULL,    //TODO
+    show_graphics,    //TODO
     NULL //sortir no es funcio
 };
 
@@ -120,7 +120,10 @@ void menu_principal()
             break;
 
             case GENERAR_GRAFICA:
-                //TODO
+                if(!tree_loaded())
+                    printf("No hi ha cap arbre carregat a memoria\n");
+                else
+                    (funcionalitat[option])();
             break;
         }
         option = get_option();

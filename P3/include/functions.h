@@ -13,6 +13,7 @@
 int create_data(char *path);
 int store_data(char *path);
 int restore_data(char *path);
+int show_graphics();
 
 void deploy();
 void freeall();
