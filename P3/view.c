@@ -31,12 +31,14 @@ void show_options()
 {
     int option;
 
-    char *header = "/**************************************************/\n"
-        "/**************** SO2 - Practica 3 ****************/\n"
-        "/**************************************************/\n";
     
 
-    printf("%s", header);
+    printf("||\t\t\t\t\t\t\n"
+            "||\t\t\t%s\n"
+            "||\t\t\t\t\t\t\n"
+            "||\t\t\t\t\t\t%s\n"
+            , _NOMBRE_PRACTICA, _CREATORS);
+
     for(option = 0; option < NFUNCTIONS; option++)
     {
         printf("\t(%d) %s\n", (option + OPTION_OFFSET), labels[option]);
@@ -51,17 +53,16 @@ int get_option()
 {
 
     int opcion;
-    char *input_message = "\nSeleciona una opcio\n";
     
     show_options();
-    printf("%s", input_message);
+    printf("\n%s\n", _ME_INPUT);
 
     scanf("%d", &opcion);
     opcion -= OPTION_OFFSET;
     while( opcion < 0 || opcion >= NFUNCTIONS )
     {
-        printf("Opcio no valida\n");
-        printf("%s", input_message);
+        printf("%s\n", _ER_INPUT);
+        printf("%s", _ME_INPUT);
         scanf("%d", &opcion);
         opcion -= OPTION_OFFSET;
     }
@@ -85,11 +86,11 @@ void menu_principal()
         switch(option)
         {
             case CREAR_ARBRE:
-                printf("Arxiu de configuracio:\n");
+                printf("%s\n", _ME_ARXIU_CFG);
                 scanf("%s", file);
                 if(tree_loaded())
                 {
-                    printf("Esborrant arbre carregat previament\n");
+                    printf("%s\n", _ME_ESBORRANT_TREE);
                     freeall();
                     deploy();
                 }
@@ -97,31 +98,38 @@ void menu_principal()
             break;
 
             case DESSAR_ARBRE:
-                printf("Arxiu a generar:\n");
-                scanf("%s", file);
-                (funcionalitat[option])(file);
+                if(!tree_loaded())
+                {
+                    printf("%s\n", _ER_FALTA_ARBRE_DESAR);
+                }
+                else
+                {
+                    printf("%s\n", _ME_ARXIU_GENERAR);
+                    scanf("%s", file);
+                    (funcionalitat[option])(file);
+                }
             break;
 
             case LLEGIR_ARBRE:
-                printf("Arxiu a llegir:\n");
+                printf("%s\n", _ME_ARXIU_CARREGAR);
                 scanf("%s", file);
                 
                 if(tree_loaded())
                 {
-                    printf("Esborrant arbre carregat previament\n");
+                    printf("%s\n", _ME_ESBORRANT_TREE);
                     freeall();
                     deploy();
                 }
 
                 if((funcionalitat[option])(file))
                 {
-                    printf("Arxiu no compatible\n");
+                    printf("%s\n", _ER_ARXIU_NOCOMPATIBLE);
                 }
             break;
 
             case GENERAR_GRAFICA:
                 if(!tree_loaded())
-                    printf("No hi ha cap arbre carregat a memoria\n");
+                    printf("%s\n", _ER_FALTA_ARBRE_GRAFICA);
                 else
                     (funcionalitat[option])();
             break;
@@ -130,6 +138,6 @@ void menu_principal()
     }
 
     freeall();
-    printf("BYE\n");
+    printf("%s\n", _ME_BYE);
 }
 
