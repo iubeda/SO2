@@ -662,8 +662,9 @@ void writeHistogram(RBTree *tree, FILE *fl)
 {
     int i;
     Histogram *hist = tree->properties->histogram;
-
+    fprintf(fl,"#Histograma de l'arbre\n");
+    fprintf(fl,"#longitud\tquantitat\n");
     for(i = 0; i < hist->length; i++)
-        fprintf(fl, "%i %i\n", i, hist->data[i]);
+        fprintf(fl, "%i\t%i\n", i, hist->data[i]);
 
 }
