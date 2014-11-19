@@ -13,8 +13,6 @@
 #define _ME_ARXIU_CARREGAR "Indica el nom del arxiu a carregar"
 #define _ME_BYE "BYE"
 
-
-
 #define _ER_INPUT "Opcio no valida"
 #define _ER_FALTA_ARBRE_DESAR "Has de tenir una arbre carregat per poder desar-ho"
 #define _ER_ARXIU_NOCOMPATIBLE "L'arxiu indicat no es compatible"

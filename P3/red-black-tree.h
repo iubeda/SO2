@@ -66,6 +66,7 @@ typedef struct Properties_
     Longest *longest;
     Histogram *histogram;
 }RBProperties;
+
 /**
  * Configuration of the tree
  */

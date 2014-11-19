@@ -177,6 +177,7 @@ int create_data(char *path)
 
 /**
  * Stores the tree in memory
+ * @ path : arxiu de en el que guardar l'arbre en format binari
  */
 int store_data(char *path)
 {
@@ -195,6 +196,7 @@ int store_data(char *path)
 
 /**
  * Stores the tree in memory
+ * @ path : arxiu del cual llegir l'arbre en format binari
  */
 int restore_data(char *path)
 {
@@ -230,7 +232,8 @@ int restore_data(char *path)
 }
 
 /**
- *
+ * Funcio que genera una grafica que representa l'hisograma de
+ * l'arbre
  *
  */
 int show_graphics(){
@@ -259,17 +262,27 @@ int show_graphics(){
     return 0;
 }
 
+/**
+ * Funcio que retorna si l'arbre esta carregat a memoria o no
+ */
 int tree_loaded()
 {
     return tree->config->loaded;
 }
 
+/**
+ * Funcio que fa malloc de les estructures principals de l'aplicacio
+ */
 void deploy()
 {
     // iniciamos el arbol
     tree = malloc(sizeof(RBTree));
     initTree(tree);
 }
+
+/**
+ * Funcio que allibera els recursos principals de l'aplicacio
+ */
 void freeall()
 {
 
@@ -283,11 +296,7 @@ void freeall()
  */
 int main()
 {
-    //deploy();
-
     menu_principal();
-
-    //freeall();
 
     return 0;
 }

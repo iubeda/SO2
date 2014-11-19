@@ -118,19 +118,6 @@ static void serializeRBData(RBData *data, FILE  *fl)
 }
 
 
-
-//void resetTree(RBTree *tree)
-//{
-//    if(DEBUG)
-//        printf("Existe un arbol cargado, lo eliminaremos primero\n");
-//
-//    deleteTree(tree);
-//    //free(tree);
-//    //tree = malloc(sizeof(RBTree));
-//    initTree(tree);
-//
-//}
-
 /**
  * P3
  * Deserializa el arbol
@@ -657,7 +644,10 @@ void generateHistogram(RBTree *tree)
     else
         tree->properties->histogram->loaded = 0;
 }
-
+/**
+ * P3:
+ * Writes the histogram intro a file
+ */
 void writeHistogram(RBTree *tree, FILE *fl)
 {
     int i;
