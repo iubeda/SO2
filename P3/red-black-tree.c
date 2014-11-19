@@ -624,6 +624,9 @@ void generateHistogram(RBTree *tree)
 {
     if(tree->root !=NIL)
     {
+        // fa un malloc d'un vector equivalent a la longitud de la paraula maxima +1
+        // despres inicialitza cada posicio a 0
+        // Un cop cridada la funcio del histograma, posa el flag loaded a 1
         Longest *longest;
         int len;
         unsigned int *data;
@@ -650,6 +653,8 @@ void generateHistogram(RBTree *tree)
  */
 void writeHistogram(RBTree *tree, FILE *fl)
 {
+    // inclou la capsalera del arxiu amb informacio relativa
+    // a la grafica
     int i;
     Histogram *hist = tree->properties->histogram;
     fprintf(fl,"#Histograma de l'arbre\n");
