@@ -3,11 +3,11 @@
 #CFLAGS = -Wall -Werror -g
 #CFLAGS = -Wall -g 
 CFLAGS = -Wall -g -DDEBUG=0
-LFLAGS = -lm
+LFLAGS = -lm -lpthread
 
 FILES_C = main.c view.c file-parser.c file-list.c linked-list.c hash-list.c red-black-tree.c
 
-TARGET = practica3
+TARGET = practica4
 
 # There is no need to change the instructions below this
 # line
