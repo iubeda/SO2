@@ -35,7 +35,7 @@ static int pnext()
     num = p_conf.k++;
     pthread_mutex_unlock(&mutex_processer);
     //fi exclusio
-    
+
     if(num > p_conf.last)
         num = -1;
 
@@ -63,11 +63,15 @@ void *procesador(void *arg)
         arxiu_procesat = fparser(fl);
 
         //TODO call indexar_llista_golbal
+        //pthread_mutex_lock(&mutex);
+            // un cop tenim l'arxiu procesat en una hash_list, l'indexem
+            indexar_en_llista_global(context->tree, arxius, context->arxius->length,  i);
+        //pthread_mutex_unlock(&mutex);
 
         fclose(fl);
         free_hash_list(arxiu_procesat);
         free(arxiu_procesat);
     }
-    
+
     return NULL;
 }
