@@ -13,4 +13,6 @@
 #define MAGIC_NUMBER "#SO2"
 #define MAGIC_NUMBER_SIZE 4
 #define HISTOGRAM_FILE "histogram.plot"
+#define NTHREADS 1
+
 #endif

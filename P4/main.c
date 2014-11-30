@@ -10,14 +10,13 @@
 #include "linked-list.h"
 #include "hash-list.h"
 #include "red-black-tree.h"
-
-
-//Longest maslarga = {0, 0, NULL};
+#include "processer.h"
 
 
 RBTree *tree;
 
 pthread_t ntid[NTHREADS];
+
 /**
  * Funcio que rep un tree i un arxiu procesar en format hash list
  * i l'indexa
@@ -87,13 +86,6 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
                     tree->properties->longest->file = arxiu;
                     tree->properties->longest->word = treeData->primary_key;
                 }
-
-                //if(maslarga.length < len)
-                //{
-                //    maslarga.length = len;
-                //    maslarga.file = arxiu; // solo almacena el primer archivo
-                //    maslarga.word = treeData->primary_key;
-                //}
 
             }
             currentItem = currentItem->next;
@@ -179,7 +171,7 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
 
 /**
  * Funcio que crea l'estructura principal
- * Es la funcio principal en la creacio de l'arbre. Un cop es crida aquesta
+ * s la funcio principal en la creacio de l'arbre. Un cop es crida aquesta
  * funcio, les altres es van cridant desde dins d'aquesta.
  * @ path : arxiu de configuracio amb la ruta dels arxius a parsejar
  */
