@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include "include/const.h"
 #include "include/functions.h"
 #include "view.h"
@@ -11,14 +12,14 @@
 #include "red-black-tree.h"
 
 
-Longest maslarga = {0, 0, NULL};
+//Longest maslarga = {0, 0, NULL};
 
 
 RBTree *tree;
 
-
+pthread_t ntid[NTHREADS];
 /**
- * Funcio que rep un tree i un arxiu procesar en format hash list 
+ * Funcio que rep un tree i un arxiu procesar en format hash list
  * i l'indexa
  * @ tree : arbre on s'indexar
  * @ aproc : arxiu procesat a indexar
@@ -32,7 +33,7 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
     ListItem *currentItem;
     ListData *data;
 
-    
+
     // recorremos cada posicion de la lista hash
     for(i = 0; i < aproc->length; i++)
     {
@@ -60,10 +61,10 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
 
             }
             else
-            {   
+            {
                 // si no esta, hem d'allocatar, inicialitzar el data
                 // copiar la paraula, copiar el numero de cops per arxiu
-                // i aumengtar el numer d'arxus 
+                // i aumengtar el numer d'arxus
                 treeData = malloc(sizeof(RBData));
 
                 len = strlen(data->primary_key);
@@ -72,8 +73,8 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
                 treeData->numTimes[arxiu] = data->numTimes;
                 treeData->numFiles++;
                 insertNode(tree, treeData);
-                
-                
+
+
                 // si esta palabra es mas larga que la almacenada como larga,
                 // la guardamos
                 /* selects which the longest word is */
@@ -93,7 +94,7 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
                 //    maslarga.file = arxiu; // solo almacena el primer archivo
                 //    maslarga.word = treeData->primary_key;
                 //}
-                
+
             }
             currentItem = currentItem->next;
 
@@ -102,37 +103,77 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
 }
 
 /**
- * procesa un llistat d arxius
- * @ arxius : estructura tipus Str_array que conte un array de punters a string 
- *              i la longitud de l'array
- * @ tree : arbre on s'indexaran els arxius
+ *
+ * @arg: estructura del tipo pthread_processer con la informacion necesaria (arxiu, tree)
+ *
+ *
  */
-static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
+static void processador(void *arg)
 {
+    struct pthread_processer *par = (struct pthread_processerº *) arg;
     int i, numarxius;
     FILE *fl;
     Hash_list *arxiu_procesat;
 
-    numarxius = arxius->length;
-    
+    numarxius = par->arxius->length;
+
     // recorrem el llistat d'arxius
-    for( i = 0; i < numarxius; i++ )
+    while( n == next_f() )
     {
-        fl = fopen(arxius->data[i], "r");
+        fl = fopen(par->arxius->data[i], "r");
         // si no podem obrir l'arxiu, pasem al seguent
         if(!fl) continue;
-
         arxiu_procesat = fparser(fl);
+
+    //pthread_mutex_lock(&mutex);
         // un cop tenim l'arxiu procesat en una hash_list, l'indexem
-        indexar_en_llista_global(tree, arxiu_procesat, arxius->length,  i);
+        indexar_en_llista_global(par->tree, arxiu_procesat, par->arxius->length,  i);
+    //pthread_mutex_unlock(&mutex);
 
         fclose(fl);
-        
+
         // alliberem memoria
         free_hash_list(arxiu_procesat);
         free(arxiu_procesat);
 
     }
+}
+
+
+
+/**
+ * procesa un llistat d arxius
+ * @ arxius : estructura tipus Str_array que conte un array de punters a string
+ *              i la longitud de l'array
+ * @ tree : arbre on s'indexaran els arxius
+ */
+static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
+{
+    int n, err;
+    void *tret;
+    struct pthread_processer *par;
+    n = 0;
+
+    par = malloc(sizeof(struct pthread_processer));
+    par->arxius = malloc(sizeof(struct Str_array));
+    par->tree = malloc(sizeof(struct RBTree));
+    par->arxius = arxius;
+    par->tree = tree;
+
+    while(n < NTHREADS){
+
+        /*
+        *
+        */
+        err = pthread_create(ntid+n, NULL, processador, (void *) par);
+
+        n++;
+    }
+
+    for(i = 0; i < NTHREADS; i++) {
+        err = pthread_join(ntid[i], &tret);
+    }
+
     return 0;
 }
 
@@ -150,12 +191,12 @@ int create_data(char *path)
     Longest *maslarga;
     maslarga = tree->properties->longest;
 
-    
+
     /* cridem a la funcio del llistat de paraules que retorna un struct */
     paraules = flist(path);
     processar_llista_arxius(paraules, tree);
     tree->config->loaded = 1;
-    
+
     if(DEBUG)
     {
         dumpTree(tree);
@@ -208,7 +249,7 @@ int restore_data(char *path)
     fmagic = malloc(sizeof(char) * msize);
     fl = fopen(path, "r");
     fread(fmagic, sizeof(char), msize, fl);
-   
+
     // file no compatible
     if(strncmp(magic, fmagic, msize) != 0 )
     {
@@ -219,7 +260,7 @@ int restore_data(char *path)
 
     deserializeTree(tree, fl);
     tree->config->loaded = 1;
-    
+
     free(fmagic);
     fclose(fl);
 
@@ -238,12 +279,12 @@ int restore_data(char *path)
  */
 int show_graphics(){
     FILE *fp;
-  
+
     // Generamos los datos necesarios para el histograma
     if(!tree->properties->histogram->loaded)
     {
         generateHistogram(tree);
-        
+
         fp = fopen(HISTOGRAM_FILE, "w");
         writeHistogram(tree, fp);
         fclose(fp);
