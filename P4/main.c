@@ -9,12 +9,27 @@
 #include "linked-list.h"
 #include "hash-list.h"
 #include "red-black-tree.h"
+//#include "processer.h"
 
-
-Longest maslarga = {0, 0, NULL};
+//Longest maslarga = {0, 0, NULL}; no se usa
 
 
 RBTree *tree;
+
+int 
+/**
+ * Funcio thread safe que retorna el valor del seguent arxiu a processar
+ */
+int f_next(Hash_list *llista)
+{
+    int next;
+    
+    //LOCK
+    next = 
+    
+    //ENDLOCK
+
+}
 
 
 /**
@@ -138,7 +153,7 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
 
 /**
  * Funcio que crea l'estructura principal
- * Es la funcio principal en la creacio de l'arbre. Un cop es crida aquesta
+ * s la funcio principal en la creacio de l'arbre. Un cop es crida aquesta
  * funcio, les altres es van cridant desde dins d'aquesta.
  * @ path : arxiu de configuracio amb la ruta dels arxius a parsejar
  */
