@@ -9,28 +9,10 @@
 #include "linked-list.h"
 #include "hash-list.h"
 #include "red-black-tree.h"
-//#include "processer.h"
-
-//Longest maslarga = {0, 0, NULL}; no se usa
+#include "processer.h"
 
 
 RBTree *tree;
-
-int 
-/**
- * Funcio thread safe que retorna el valor del seguent arxiu a processar
- */
-int f_next(Hash_list *llista)
-{
-    int next;
-    
-    //LOCK
-    next = 
-    
-    //ENDLOCK
-
-}
-
 
 /**
  * Funcio que rep un tree i un arxiu procesar en format hash list 
@@ -102,13 +84,6 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
                     tree->properties->longest->word = treeData->primary_key;
                 }
 
-                //if(maslarga.length < len)
-                //{
-                //    maslarga.length = len;
-                //    maslarga.file = arxiu; // solo almacena el primer archivo
-                //    maslarga.word = treeData->primary_key;
-                //}
-                
             }
             currentItem = currentItem->next;
 

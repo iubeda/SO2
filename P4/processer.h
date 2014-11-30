@@ -1,23 +1,23 @@
 #ifndef _PROCESSER_H
 #define _PROCESSER_H
-#include "const.h"
-#include "../file-list.h"
-#include "../hash-list.h"
-#include "../red-black-tree.h"
+#include "include/const.h"
+#include "file-list.h"
+#include "hash-list.h"
+#include "red-black-tree.h"
 
-typedef struct _PTHREAD_PROCESSER{
+typedef struct _PROCESSER_CONTEXT{
     Hash_list *llista;
     RBTree *tree;
-}PTHREAD_PROCESSER;
+}Processer_context;
 
 
 typedef struct _PROCESSER_CONF{
-    int init;
-    int k;
-    int limit;
-}PROCESSER_CONF;
+    int init;   // defines if the processer is configured
+    int k;      // the element to be processed
+    int last;   // the last element to be processed
+}Processer_conf;
 
-int init_processer(int limit);
-//int pnfext(Hash_list *llista); not public
+void init_processer(int limit);
+void *procesador(void *arg);
 
 #endif

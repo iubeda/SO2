@@ -1,6 +1,6 @@
 #ifndef _RED_BLACK_TREE_H
 #define _RED_BLACK_TREE_H
-
+#include <stdio.h>
 /**
  *
  * Red-black tree header 
