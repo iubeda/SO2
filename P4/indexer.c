@@ -44,9 +44,9 @@ void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  i
         {
             data = currentItem->data;
             //busquem la paraula a l'arbre
-                pthread_mutex_lock(&mutex_indexer);
+//                pthread_mutex_lock(&mutex_indexer);
             treeData = findNode(tree, data->primary_key);
-                pthread_mutex_unlock(&mutex_indexer);
+//                pthread_mutex_unlock(&mutex_indexer);
             if(treeData != NULL) // si la paraula esta a l'arbre
             {
                 // augmentem en 1 el numero d'arxius en el que surt la paraula
@@ -67,9 +67,9 @@ void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  i
                 strcpy(treeData->primary_key, data->primary_key);
                 treeData->numTimes[arxiu] = data->numTimes;
                 treeData->numFiles++;
-                    pthread_mutex_lock(&mutex_indexer);
+//                    pthread_mutex_lock(&mutex_indexer);
                 insertNode(tree, treeData);
-                    pthread_mutex_unlock(&mutex_indexer);
+//                    pthread_mutex_unlock(&mutex_indexer);
 
 
                 // si esta palabra es mas larga que la almacenada como larga,
@@ -77,7 +77,7 @@ void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  i
                 /* selects which the longest word is */
                 len = strlen(data->primary_key);
 
-                    pthread_mutex_lock(&mutex_indexer);
+//                    pthread_mutex_lock(&mutex_indexer);
                 if(tree->properties->longest->length < len)
                 {
                     //this data contains the new longest word
@@ -85,7 +85,7 @@ void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  i
                     tree->properties->longest->file = arxiu;
                     tree->properties->longest->word = treeData->primary_key;
                 }
-                    pthread_mutex_unlock(&mutex_indexer);
+//                    pthread_mutex_unlock(&mutex_indexer);
 
             }
             currentItem = currentItem->next;
