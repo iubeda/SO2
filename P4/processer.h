@@ -6,7 +6,7 @@
 #include "red-black-tree.h"
 
 typedef struct _PROCESSER_CONTEXT{
-    Hash_list *llista;
+    Str_array *llista;
     RBTree *tree;
 }Processer_context;
 

@@ -11,88 +11,13 @@
 #include "hash-list.h"
 #include "red-black-tree.h"
 #include "processer.h"
+#include "indexer.h"
 
 
 RBTree *tree;
 
 pthread_t ntid[NTHREADS];
 
-/**
- * Funcio que rep un tree i un arxiu procesar en format hash list
- * i l'indexa
- * @ tree : arbre on s'indexar
- * @ aproc : arxiu procesat a indexar
- * @ num_arxius : numero dp'arxius total
- * @ arxiu : numero d'arxiu a procesar
- * */
-static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arxius,  int arxiu)
-{
-    int i, len;
-    RBData *treeData;
-    ListItem *currentItem;
-    ListData *data;
-
-
-    // recorremos cada posicion de la lista hash
-    for(i = 0; i < aproc->length; i++)
-    {
-        if(DEBUG){
-            printf("Dumping list %i, file %i\n", i, arxiu);
-            dumpList(aproc->data[i]);
-            printf("*\t*\t*\n");
-        }
-        //indexamos el contenido de esta lista enlazada
-        //indexar_llista_enllasada(tree, aproc->data[i], aproc->length);
-
-        //recuperem el primer node de la llista
-        currentItem = aproc->data[i]->first;
-        while(currentItem != NULL)
-        {
-            data = currentItem->data;
-            //busquem la paraula a l'arbre
-            treeData = findNode(tree, data->primary_key);
-            if(treeData != NULL) // si la paraula esta a l'arbre
-            {
-                // augmentem en 1 el numero d'arxius en el que surt la paraula
-                // i marquem el numero de cops que surt a l'arxiu
-                treeData->numFiles++;
-                treeData->numTimes[arxiu] = data->numTimes;
-
-            }
-            else
-            {
-                // si no esta, hem d'allocatar, inicialitzar el data
-                // copiar la paraula, copiar el numero de cops per arxiu
-                // i aumengtar el numer d'arxus
-                treeData = malloc(sizeof(RBData));
-
-                len = strlen(data->primary_key);
-                initRBData(treeData, len,num_arxius);
-                strcpy(treeData->primary_key, data->primary_key);
-                treeData->numTimes[arxiu] = data->numTimes;
-                treeData->numFiles++;
-                insertNode(tree, treeData);
-
-
-                // si esta palabra es mas larga que la almacenada como larga,
-                // la guardamos
-                /* selects which the longest word is */
-                len = strlen(data->primary_key);
-
-                if(tree->properties->longest->length < len)
-                {
-                    //this data contains the new longest word
-                    tree->properties->longest->length = len;
-                    tree->properties->longest->file = arxiu;
-                    tree->properties->longest->word = treeData->primary_key;
-                }
-
-            }
-            currentItem = currentItem->next;
-
-        }
-    }
-}
 
 /**
  *
@@ -100,17 +25,18 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc, int num_arx
  *
  *
  */
+/*
 static void processador(void *arg)
 {
-    struct pthread_processer *par = (struct pthread_processerº *) arg;
-    int i, numarxius;
+    struct Processer_context *par = (struct Processer_context *) arg;
+    int i,n, numarxius;
     FILE *fl;
     Hash_list *arxiu_procesat;
 
     numarxius = par->arxius->length;
 
     // recorrem el llistat d'arxius
-    while( n == next_f() )
+    while( n == pnext() )
     {
         fl = fopen(par->arxius->data[i], "r");
         // si no podem obrir l'arxiu, pasem al seguent
@@ -130,7 +56,7 @@ static void processador(void *arg)
 
     }
 }
-
+*/
 
 
 /**
@@ -141,15 +67,15 @@ static void processador(void *arg)
  */
 static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
 {
-    int n, err;
+    int n, i, err;
     void *tret;
-    struct pthread_processer *par;
+    Processer_context *par;
     n = 0;
 
-    par = malloc(sizeof(struct pthread_processer));
-    par->arxius = malloc(sizeof(struct Str_array));
-    par->tree = malloc(sizeof(struct RBTree));
-    par->arxius = arxius;
+    par = malloc(sizeof(Processer_context));
+    par->llista = malloc(sizeof(Str_array));
+    par->tree = malloc(sizeof(RBTree));
+    par->llista = arxius;
     par->tree = tree;
 
     while(n < NTHREADS){
@@ -157,13 +83,20 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
         /*
         *
         */
-        err = pthread_create(ntid+n, NULL, processador, (void *) par);
-
+        err = pthread_create(ntid + n, NULL, procesador, (void *) par);
+        if (err != 0) {
+            printf("no puc crear el fil numero %d.", n);
+            exit(1);
+        }
         n++;
     }
 
     for(i = 0; i < NTHREADS; i++) {
         err = pthread_join(ntid[i], &tret);
+        if (err != 0) {
+            printf("error pthread_join al fil %d\n", i);
+            exit(1);
+        }
     }
 
     return 0;

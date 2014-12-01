@@ -4,7 +4,7 @@
 #include "include/functions.h"
 #define OPTION_OFFSET 1
 
-#define _NOMBRE_PRACTICA "SO2 Practica 3"
+#define _NOMBRE_PRACTICA "SO2 Practica 4"
 #define _CREATORS "I.Ubeda && J.Marin"
 #define _ME_INPUT "Selecciona una opcio:"
 #define _ME_ARXIU_CFG "Indica una arxiu de configuracio:"

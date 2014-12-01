@@ -5,7 +5,7 @@
 CFLAGS = -Wall -g -DDEBUG=1
 LFLAGS = -lm -lpthread
 
-FILES_C = main.c view.c file-parser.c file-list.c linked-list.c hash-list.c red-black-tree.c processer.c
+FILES_C = main.c view.c file-parser.c file-list.c linked-list.c hash-list.c red-black-tree.c processer.c indexer.c
 
 TARGET = practica4
 

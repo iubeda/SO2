@@ -3,10 +3,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "file-parser.h"
+#include "indexer.h"
 
 Processer_conf p_conf = { 0, 0, 0 };
 pthread_mutex_t mutex_processer = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex_indexer = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t pmutex_indexer = PTHREAD_MUTEX_INITIALIZER;
 
 
 /**
@@ -42,6 +43,12 @@ static int pnext()
     return num;
 }
 
+/**
+ *
+ * @arg: estructura del tipo pthread_processer con la informacion necesaria (arxiu, tree)
+ *
+ *
+ */
 void *procesador(void *arg)
 {
     Hash_list *arxiu_procesat;
@@ -63,10 +70,10 @@ void *procesador(void *arg)
         arxiu_procesat = fparser(fl);
 
         //TODO call indexar_llista_golbal
-        //pthread_mutex_lock(&mutex);
+        //pthread_mutex_lock(&pmutex_indexer);
             // un cop tenim l'arxiu procesat en una hash_list, l'indexem
-            indexar_en_llista_global(context->tree, arxius, context->arxius->length,  i);
-        //pthread_mutex_unlock(&mutex);
+            indexar_en_llista_global(tree, arxiu_procesat, arxius->length,  narxiu);
+        //pthread_mutex_unlock(&pmutex_indexer);
 
         fclose(fl);
         free_hash_list(arxiu_procesat);
