@@ -73,10 +73,12 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
     n = 0;
 
     par = malloc(sizeof(Processer_context));
-    par->llista = malloc(sizeof(Str_array));
-    par->tree = malloc(sizeof(RBTree));
+
     par->llista = arxius;
     par->tree = tree;
+
+    // calls the function init processer
+    init_processer(arxius->length);
 
     while(n < NTHREADS){
 
@@ -99,6 +101,7 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
         }
     }
 
+    free(par);
     return 0;
 }
 
