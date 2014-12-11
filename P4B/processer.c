@@ -8,7 +8,7 @@
 
 Processer_conf p_conf = { 0, 0, 0 };
 pthread_mutex_t mutex_processer = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t pmutex_indexer = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t pmutex_shared = PTHREAD_MUTEX_INITIALIZER;
 
 
 /**
@@ -33,7 +33,7 @@ static int pnext()
     int num;
 
     pthread_t tid = pthread_self();
-    
+
     //exclusio
     pthread_mutex_lock(&mutex_processer);
     if(DEBUGPTH)
@@ -88,20 +88,34 @@ void *procesador(void *arg)
         fl = fopen(arxius->data[narxiu], "r");
 
         arxiu_procesat = fparser(fl);
+        // asignar el numero de fichero procesado
+        arxiu_procesat->number = narxiu;
+        arxiu_procesat->longitud = arxius->length;
+
+    // ExclusiON
+        pthread_mutex_lock(&pmutex_shared);
+        if(DEBUGPTH){
+            printf("Thread %i demana indexar \n",(int)tid);
+        }
+        // un cop tenim l'arxiu procesat en una hash_list, l'indexem
+        // indexar_en_llista_global(tree, arxiu_procesat, arxius->length,  narxiu);
+        if(DEBUGPTH){
+            printf("Thread %i termina d'indexar\n",(int)tid);
+        }
+        /*
+        while(indexer_buffer.quantity){
+            pthread_cond_wait( cond, mutex2 );
+        }
+        */
+        //indexer_buffer.quantity++;
+        //indexer_buffer->buffer[indexer_buffer.pposition] = arxiu_procesat;
+        //indexer_buffer.pposition = (pposition + 1) % size;
+
+        pthread_mutex_unlock(&pmutex_shared);
+    // ExclusiOFF
 
         fclose(fl);
-
-        //TODO call indexar_llista_golbal
-        pthread_mutex_lock(&pmutex_indexer);
-            if(DEBUGPTH)
-                printf("Thread %i demana indexar \n",(int)tid);
-            // un cop tenim l'arxiu procesat en una hash_list, l'indexem
-        indexar_en_llista_global(tree, arxiu_procesat, arxius->length,  narxiu);
-            if(DEBUGPTH)
-                printf("Thread %i termina d'indexar\n",(int)tid);
-        pthread_mutex_unlock(&pmutex_indexer);
-
-        free_hash_list(arxiu_procesat);
+        //free_hash_list(arxiu_procesat);
         free(arxiu_procesat);
     }
 

@@ -9,6 +9,8 @@
 
 typedef struct HASH_LIST{
     int length; // longitud del vector
+    int number; // numero de archivo
+    int longitud;
     List **data; // datos
 }Hash_list;
 
