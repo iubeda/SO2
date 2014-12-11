@@ -19,5 +19,5 @@ typedef struct _PROCESSER_CONF{
 
 void init_processer(int limit);
 void *procesador(void *arg);
-
+extern Indexer_buffer *ibuffer;
 #endif
