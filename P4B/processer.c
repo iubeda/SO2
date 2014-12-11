@@ -8,8 +8,10 @@
 
 Processer_conf p_conf = { 0, 0, 0 };
 pthread_mutex_t mutex_processer = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t pmutex_shared = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_shared = PTHREAD_MUTEX_INITIALIZER;
 
+pthread_cond_t cond_indexar = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond_procesar = PTHREAD_COND_INITIALIZER;
 
 /**
  * Inits the processer scheme
@@ -22,8 +24,20 @@ void init_processer(int last)
     p_conf.init = 1;
     p_conf.k = 0;
     p_conf.last = last;
+
 }
 
+void send_signal_to_indexer(){
+
+    pthread_mutex_lock(&mutex_shared);
+    if(DEBUGPTH)
+        printf("Avisant a l'indexer que ya han terminat els procesadors\n");
+    ibuffer->end = 1;
+
+    pthread_cond_signal(&cond_indexar);
+    pthread_mutex_unlock(&mutex_shared);
+
+}
 /**
  * Returns the next element to be processed
  * Is a thread save function
@@ -69,9 +83,8 @@ void *procesador(void *arg)
 
     Hash_list *arxiu_procesat;
     Processer_context *context = (Processer_context *) arg;
-
+    //Indexer_buffer *indexer_buffer = ibuffer;
     Str_array *arxius = context->llista;
-    RBTree *tree = context->tree;
     pthread_t tid = pthread_self();
     int narxiu;
     FILE *fl;
@@ -93,30 +106,33 @@ void *procesador(void *arg)
         arxiu_procesat->longitud = arxius->length;
 
     // ExclusiON
-        pthread_mutex_lock(&pmutex_shared);
-        if(DEBUGPTH){
-            printf("Thread %i demana indexar \n",(int)tid);
-        }
-        // un cop tenim l'arxiu procesat en una hash_list, l'indexem
-        // indexar_en_llista_global(tree, arxiu_procesat, arxius->length,  narxiu);
+        pthread_mutex_lock(&mutex_shared);
+        
         if(DEBUGPTH){
             printf("Thread %i termina d'indexar\n",(int)tid);
         }
-        /*
-        while(indexer_buffer.quantity){
-            pthread_cond_wait( cond, mutex2 );
+        
+        while(ibuffer->quantity == ibuffer->length)
+        {
+            if(DEBUGPTH){
+                printf("Buffer ple, thread %i espera\n",(int)tid);
+            }
+            pthread_cond_wait( &cond_procesar, &mutex_shared );
         }
-        */
-        //indexer_buffer.quantity++;
-        //indexer_buffer->buffer[indexer_buffer.pposition] = arxiu_procesat;
-        //indexer_buffer.pposition = (pposition + 1) % size;
+        
+        ibuffer->buffer[ ibuffer->pposition++ ] = arxiu_procesat;
+        ibuffer->pposition %= ibuffer->length;
+        ibuffer->quantity++;
 
-        pthread_mutex_unlock(&pmutex_shared);
+        // usamos signal para despertar solo a un  hilo
+        pthread_cond_signal(&cond_indexar);
+        // liberamos la llave
+        pthread_mutex_unlock(&mutex_shared);
     // ExclusiOFF
 
         fclose(fl);
         //free_hash_list(arxiu_procesat);
-        free(arxiu_procesat);
+        //free(arxiu_procesat);
     }
 
     return NULL;

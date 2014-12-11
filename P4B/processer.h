@@ -3,11 +3,10 @@
 #include "include/const.h"
 #include "file-list.h"
 #include "hash-list.h"
-#include "red-black-tree.h"
+#include "indexer.h"
 
 typedef struct _PROCESSER_CONTEXT{
     Str_array *llista;
-    RBTree *tree; // no necesari
 }Processer_context;
 
 
@@ -19,5 +18,11 @@ typedef struct _PROCESSER_CONF{
 
 void init_processer(int limit);
 void *procesador(void *arg);
+void send_signal_to_indexer();
+
 extern Indexer_buffer *ibuffer;
+extern pthread_mutex_t mutex_shared;
+extern pthread_cond_t cond_indexar;
+extern pthread_cond_t cond_procesar;
+
 #endif

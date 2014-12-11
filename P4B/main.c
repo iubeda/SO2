@@ -16,47 +16,8 @@
 
 RBTree *tree;
 
-pthread_t ntid[NTHREADS];
+pthread_t ntid[NTHREADS + 1];
 
-
-/**
- *
- * @arg: estructura del tipo pthread_processer con la informacion necesaria (arxiu, tree)
- *
- *
- */
-/*
-static void processador(void *arg)
-{
-    struct Processer_context *par = (struct Processer_context *) arg;
-    int i,n, numarxius;
-    FILE *fl;
-    Hash_list *arxiu_procesat;
-
-    numarxius = par->arxius->length;
-
-    // recorrem el llistat d'arxius
-    while( n == pnext() )
-    {
-        fl = fopen(par->arxius->data[i], "r");
-        // si no podem obrir l'arxiu, pasem al seguent
-        if(!fl) continue;
-        arxiu_procesat = fparser(fl);
-
-    //pthread_mutex_lock(&mutex);
-        // un cop tenim l'arxiu procesat en una hash_list, l'indexem
-        indexar_en_llista_global(par->tree, arxiu_procesat, par->arxius->length,  i);
-    //pthread_mutex_unlock(&mutex);
-
-        fclose(fl);
-
-        // alliberem memoria
-        free_hash_list(arxiu_procesat);
-        free(arxiu_procesat);
-
-    }
-}
-*/
 
 
 /**
@@ -70,21 +31,22 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
     int n, i, err;
     void *tret;
     Processer_context *par;
+    Indexer_context *ind;
     n = 0;
 
     par = malloc(sizeof(Processer_context));
+    ind = malloc(sizeof(Indexer_context));
 
     par->llista = arxius;
-    par->tree = tree;
+    ind->tree = tree;
 
-    // calls the function init processer
+    // calls the function init processer and indexer
     init_processer(arxius->length);
+    init_indexer(NTHREADS);
 
     while(n < NTHREADS){
 
-        /*
-        *
-        */
+        // los threads procesadores
         err = pthread_create(ntid + n, NULL, procesador, (void *) par);
         if (err != 0) {
             printf("no puc crear el fil numero %d.", n);
@@ -92,7 +54,14 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
         }
         n++;
     }
+    // el thread para el indexador
+    err = pthread_create(ntid + n, NULL, indexador, (void *) ind);
+    if (err != 0) {
+        printf("no puc crear el fil numero %d.", n);
+        exit(1);
+    }
 
+    //nos unimos a los threads procesadores
     for(i = 0; i < NTHREADS; i++) {
         err = pthread_join(ntid[i], &tret);
         if (err != 0) {
@@ -100,8 +69,12 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
             exit(1);
         }
     }
+    send_signal_to_indexer();
+    // join the indexer
+    err = pthread_join(ntid[i], &tret);
 
     free(par);
+    free(ind);
     return 0;
 }
 
