@@ -7,7 +7,7 @@
 
 typedef struct _PROCESSER_CONTEXT{
     Str_array *llista;
-    RBTree *tree;
+    RBTree *tree; // no necesari
 }Processer_context;
 
 

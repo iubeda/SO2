@@ -9,7 +9,31 @@
 #include "red-black-tree.h"
 
 
-pthread_mutex_t mutex_indexer = PTHREAD_MUTEX_INITIALIZER;
+/**
+ *
+ * Funcio que inicialitza el buffer, es propietat de l'indexador
+ * 
+ */
+int init_indexer(int size)
+{
+    //inicializamos el ibuffer
+    ibuffer->length = size;
+    ibuffer->pposition = 0;
+    ibuffer->iposition = 0;
+    ibuffer->end = 0;
+    // allocatamos todo a null
+    ibuffer->buffer = calloc(size, sizeof(Hash_list*));
+
+    return 0; 
+}
+/*
+ * Funcio que allibera els recursos del indexer
+ */
+int end_indexer()
+{
+    free(ibuffer->buffer);
+    return 0;
+}
 
 /**
  * Funcio que rep un tree i un arxiu procesar en format hash list
