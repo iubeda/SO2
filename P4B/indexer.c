@@ -13,7 +13,7 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc);
 /**
  *
  * Funcio que inicialitza el buffer, es propietat de l'indexador
- * 
+ *
  */
 int init_indexer(int buffer_size)
 {
@@ -27,7 +27,7 @@ int init_indexer(int buffer_size)
     // allocatamos todo a null
     ibuffer->buffer = calloc(buffer_size, sizeof(Hash_list*));
     //ibuffer->buffer = malloc(sizeof(Hash_list*)* buffer_size);
-    return 0; 
+    return 0;
 }
 /*
  * Funcio que allibera els recursos del indexer
@@ -48,7 +48,7 @@ static Hash_list *inext()
     pthread_mutex_lock(&mutex_shared);
     if(DEBUGPTH)
         printf("Indexer accedeix per a recuperar el element buffer\n");
-    
+
     CHECK_IF_END:
     if( ibuffer->end && !ibuffer->quantity )
     {
@@ -62,7 +62,7 @@ static Hash_list *inext()
         if( !ibuffer->quantity ){
             if(DEBUGPTH)
                 printf("Buffer buit, indexer espera\n");
-            
+
             pthread_cond_wait(&cond_indexar, &mutex_shared);
             goto CHECK_IF_END;
         }
@@ -73,7 +73,7 @@ static Hash_list *inext()
         next_element = ibuffer->buffer[ibuffer->iposition++];
         ibuffer->iposition %= ibuffer->length;
         ibuffer->quantity--;
-        
+
         // usamos el signal para despertar solo a un hilo
         pthread_cond_signal( &cond_procesar );
     }
@@ -114,7 +114,7 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc)
     RBData *treeData;
     ListItem *currentItem;
     ListData *data;
-    num_arxius = aproc->longitud;
+    num_arxius = aproc->totalarxius;
     arxiu = aproc->number;
 
 
@@ -135,9 +135,8 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc)
         {
             data = currentItem->data;
             //busquem la paraula a l'arbre
-//                pthread_mutex_lock(&mutex_indexer);
             treeData = findNode(tree, data->primary_key);
-//                pthread_mutex_unlock(&mutex_indexer);
+
             if(treeData != NULL) // si la paraula esta a l'arbre
             {
                 // augmentem en 1 el numero d'arxius en el que surt la paraula
@@ -158,17 +157,14 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc)
                 strcpy(treeData->primary_key, data->primary_key);
                 treeData->numTimes[arxiu] = data->numTimes;
                 treeData->numFiles++;
-//                    pthread_mutex_lock(&mutex_indexer);
-                insertNode(tree, treeData);
-//                    pthread_mutex_unlock(&mutex_indexer);
 
+                insertNode(tree, treeData);
 
                 // si esta palabra es mas larga que la almacenada como larga,
                 // la guardamos
                 /* selects which the longest word is */
                 len = strlen(data->primary_key);
 
-//                    pthread_mutex_lock(&mutex_indexer);
                 if(tree->properties->longest->length < len)
                 {
                     //this data contains the new longest word
@@ -176,7 +172,6 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc)
                     tree->properties->longest->file = arxiu;
                     tree->properties->longest->word = treeData->primary_key;
                 }
-//                    pthread_mutex_unlock(&mutex_indexer);
 
             }
             currentItem = currentItem->next;
@@ -186,4 +181,4 @@ static void indexar_en_llista_global(RBTree *tree, Hash_list *aproc)
 
     free_hash_list(aproc);
     free(aproc);
-} 
+}

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <sys/time.h>
 #include "include/const.h"
 #include "include/functions.h"
 #include "view.h"
@@ -86,17 +87,23 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
  */
 int create_data(char *path)
 {
-
+    struct timeval tv1, tv2; // Cronologic
+    clock_t Tinici, Tfinal;
     Str_array *paraules;
     int iter;
     Longest *maslarga;
     maslarga = tree->properties->longest;
 
+    gettimeofday(&tv1, NULL);
+    Tinici = clock();
 
     /* cridem a la funcio del llistat de paraules que retorna un struct */
     paraules = flist(path);
     processar_llista_arxius(paraules, tree);
     tree->config->loaded = 1;
+
+    gettimeofday(&tv2, NULL);
+    Tfinal = clock();
 
     if(DEBUG)
     {
@@ -105,6 +112,12 @@ int create_data(char *path)
             "de longitud: %i\naparece en el fichero: %s\n",
             maslarga->word, maslarga->length, paraules->data[maslarga->file]);
     }
+    if(DEBUGPTH)
+    {
+        printf("Temps de CPU: %f seconds\n", (double)(Tfinal - Tinici) / (double) CLOCKS_PER_SEC);
+        printf("Temps cronologic: %f seconds\n", (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
+    }
+
     // de moment podem eliminar les dades del arxiu de configuracio
     // aqui
     for(iter = 0; iter < paraules->length; iter++)

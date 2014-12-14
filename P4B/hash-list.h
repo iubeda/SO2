@@ -10,7 +10,7 @@
 typedef struct HASH_LIST{
     int length; // longitud del vector
     int number; // numero de archivo
-    int longitud;
+    int totalarxius;
     List **data; // datos
 }Hash_list;
 

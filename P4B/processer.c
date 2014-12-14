@@ -16,7 +16,7 @@ pthread_cond_t cond_procesar = PTHREAD_COND_INITIALIZER;
 /**
  * Inits the processer scheme
  * Call this function before create threads madly
- * If this function is not called the shceme may not work
+ * If this function is not called the scheme may not work
  * You are forewarned
  */
 void init_processer(int last)
@@ -103,15 +103,15 @@ void *procesador(void *arg)
         arxiu_procesat = fparser(fl);
         // asignar el numero de fichero procesado
         arxiu_procesat->number = narxiu;
-        arxiu_procesat->longitud = arxius->length;
+        arxiu_procesat->totalarxius = arxius->length;
 
-    // ExclusiON
+        // ExclusiON
         pthread_mutex_lock(&mutex_shared);
-        
+
         if(DEBUGPTH){
             printf("Thread %i termina d'indexar\n",(int)tid);
         }
-        
+
         while(ibuffer->quantity == ibuffer->length)
         {
             if(DEBUGPTH){
@@ -119,7 +119,7 @@ void *procesador(void *arg)
             }
             pthread_cond_wait( &cond_procesar, &mutex_shared );
         }
-        
+
         ibuffer->buffer[ ibuffer->pposition++ ] = arxiu_procesat;
         ibuffer->pposition %= ibuffer->length;
         ibuffer->quantity++;
@@ -128,7 +128,7 @@ void *procesador(void *arg)
         pthread_cond_signal(&cond_indexar);
         // liberamos la llave
         pthread_mutex_unlock(&mutex_shared);
-    // ExclusiOFF
+        // ExclusiOFF
 
         fclose(fl);
         //free_hash_list(arxiu_procesat);
