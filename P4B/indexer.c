@@ -49,22 +49,25 @@ static Hash_list *inext()
     if(DEBUGPTH)
         printf("Indexer accedeix per a recuperar el element buffer\n");
 
-    CHECK_IF_END:
-    if( ibuffer->end && !ibuffer->quantity )
+    next_element = NULL;
+    
+    // mentre next_element sigui null
+    while( !next_element )
     {
-        if(DEBUGPTH)
-            printf("Indexer termina de treballar y surt\n");
-
-        next_element = NULL;
-    }
-    else
-    {
-        if( !ibuffer->quantity ){
+        // si es la fi
+        if( ibuffer->end )
+        {
             if(DEBUGPTH)
-                printf("Buffer buit, indexer espera\n");
+                printf("Indexer termina de treballar y surt\n");
 
+            break;
+        }
+        else if( !ibuffer->quantity )
+        {
             pthread_cond_wait(&cond_indexar, &mutex_shared);
-            goto CHECK_IF_END;
+            if(DEBUGPTH)
+                printf("Indexer desperta\n");
+            continue;
         }
 
         if(DEBUGPTH)
@@ -76,6 +79,7 @@ static Hash_list *inext()
 
         // usamos el signal para despertar solo a un hilo
         pthread_cond_signal( &cond_procesar );
+
     }
 
     pthread_mutex_unlock( &mutex_shared );

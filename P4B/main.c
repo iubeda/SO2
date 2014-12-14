@@ -112,7 +112,7 @@ int create_data(char *path)
             "de longitud: %i\naparece en el fichero: %s\n",
             maslarga->word, maslarga->length, paraules->data[maslarga->file]);
     }
-    if(DEBUGPTH)
+    if(DEBUGTIME)
     {
         printf("Temps de CPU: %f seconds\n", (double)(Tfinal - Tinici) / (double) CLOCKS_PER_SEC);
         printf("Temps cronologic: %f seconds\n", (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
