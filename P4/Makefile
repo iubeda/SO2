@@ -1,8 +1,8 @@
 # This is the makefile that generates the executable
 
 #CFLAGS = -Wall -Werror -g
-#CFLAGS = -Wall -g 
-CFLAGS = -Wall -g -DDEBUG=0 -DDEBUGPTH=1
+#CFLAGS = -Wall -g
+CFLAGS = -Wall -g -DDEBUG=0 -DDEBUGPTH=1 -DDEBUGTIME=1
 LFLAGS = -lm -lpthread
 
 FILES_C = main.c view.c file-parser.c file-list.c linked-list.c hash-list.c red-black-tree.c processer.c indexer.c
@@ -15,12 +15,12 @@ TARGET = practica4
 FILES_O = $(subst .c,.o,$(FILES_C))
 
 $(TARGET): $(FILES_O) Makefile
-	gcc $(FILES_O) -o $(TARGET) $(LFLAGS) 
+	gcc $(FILES_O) -o $(TARGET) $(LFLAGS)
 
-%.o: %.c Makefile 
+%.o: %.c Makefile
 	gcc $(CFLAGS) -c $<
 
-all: $(TARGET) 
+all: $(TARGET)
 
 clean:
-	/bin/rm $(FILES_O) $(TARGET) 
+	/bin/rm $(FILES_O) $(TARGET)

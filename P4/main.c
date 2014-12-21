@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <sys/time.h>
 #include "include/const.h"
 #include "include/functions.h"
 #include "view.h"
@@ -17,46 +18,6 @@
 RBTree *tree;
 
 pthread_t ntid[NTHREADS];
-
-
-/**
- *
- * @arg: estructura del tipo pthread_processer con la informacion necesaria (arxiu, tree)
- *
- *
- */
-/*
-static void processador(void *arg)
-{
-    struct Processer_context *par = (struct Processer_context *) arg;
-    int i,n, numarxius;
-    FILE *fl;
-    Hash_list *arxiu_procesat;
-
-    numarxius = par->arxius->length;
-
-    // recorrem el llistat d'arxius
-    while( n == pnext() )
-    {
-        fl = fopen(par->arxius->data[i], "r");
-        // si no podem obrir l'arxiu, pasem al seguent
-        if(!fl) continue;
-        arxiu_procesat = fparser(fl);
-
-    //pthread_mutex_lock(&mutex);
-        // un cop tenim l'arxiu procesat en una hash_list, l'indexem
-        indexar_en_llista_global(par->tree, arxiu_procesat, par->arxius->length,  i);
-    //pthread_mutex_unlock(&mutex);
-
-        fclose(fl);
-
-        // alliberem memoria
-        free_hash_list(arxiu_procesat);
-        free(arxiu_procesat);
-
-    }
-}
-*/
 
 
 /**
@@ -113,17 +74,23 @@ static int processar_llista_arxius(Str_array *arxius, RBTree *tree)
  */
 int create_data(char *path)
 {
-
+    struct timeval tv1, tv2; // Cronologic
+    clock_t Tinici, Tfinal;
     Str_array *paraules;
     int iter;
     Longest *maslarga;
     maslarga = tree->properties->longest;
 
+    gettimeofday(&tv1, NULL);
+    Tinici = clock();
 
     /* cridem a la funcio del llistat de paraules que retorna un struct */
     paraules = flist(path);
     processar_llista_arxius(paraules, tree);
     tree->config->loaded = 1;
+
+    gettimeofday(&tv2, NULL);
+    Tfinal = clock();
 
     if(DEBUG)
     {
@@ -131,6 +98,11 @@ int create_data(char *path)
         printf("Palabra mas larga: %s\n"
             "de longitud: %i\naparece en el fichero: %s\n",
             maslarga->word, maslarga->length, paraules->data[maslarga->file]);
+    }
+    if(DEBUGTIME)
+    {
+        printf("Temps de CPU: %f seconds\n", (double)(Tfinal - Tinici) / (double) CLOCKS_PER_SEC);
+        printf("Temps cronologic: %f seconds\n", (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
     }
     // de moment podem eliminar les dades del arxiu de configuracio
     // aqui
